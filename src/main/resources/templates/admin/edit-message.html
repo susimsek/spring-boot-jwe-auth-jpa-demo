@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Edit Message', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/admin/message-management}" class="text-decoration-none">
+          <i class="fa fa-comments me-1" aria-hidden="true"></i> Message Management
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-edit me-1" aria-hidden="true"></i> Edit Message
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Edit Message</h5>
+        </div>
+        <div class="card-body">
+
+          <form id="editMessageForm" class="needs-validation" novalidate>
+            <!-- Locale -->
+            <div class="mb-3">
+              <label for="locale" class="form-label">Locale</label>
+              <select id="locale"
+                      name="locale"
+                      class="form-select bg-body-secondary text-muted"
+                      required disabled>
+                <option value="en">English</option>
+              </select>
+              <div class="invalid-feedback" id="localeFeedback"></div>
+            </div>
+
+            <!-- Code -->
+            <div class="mb-3">
+              <label for="code" class="form-label">Message Code</label>
+              <input type="text"
+                     id="code"
+                     name="code"
+                     class="form-control"
+                     required
+                     minlength="3" maxlength="100"
+                     data-pattern-msg="Code must be between 3 and 100 characters.">
+              <div class="invalid-feedback" id="codeFeedback"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea id="content"
+                        name="content"
+                        class="form-control"
+                        rows="3"
+                        required
+                        maxlength="500"></textarea>
+              <div class="invalid-feedback" id="contentFeedback"></div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="updateBtn"
+                      disabled>
+                Save Changes
+                <span id="updateSpinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Global Error -->
+            <div id="formError"
+                 class="alert alert-danger text-center py-2 d-none"></div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { validateField, apiRequest } from '/js/app.js';
+
+  const form = document.getElementById('editMessageForm');
+  const updateBtn = document.getElementById('updateBtn');
+  const spinner = document.getElementById('updateSpinner');
+  const errorDiv = document.getElementById('formError');
+
+  const localeEl = document.getElementById('locale');
+  const codeEl = document.getElementById('code');
+  const contentEl = document.getElementById('content');
+
+  const path = window.location.pathname.split('/');
+  const messageId = path[path.length - 1];
+
+  document.addEventListener('DOMContentLoaded', init);
+
+  async function init() {
+    try {
+      const res = await apiRequest(`/api/admin/messages/${messageId}`);
+      const links = res.data._links || {};
+      window.updateMessageUrl = links.update?.href;
+      if (res?.status === 200) {
+        const m = res.data;
+        localeEl.value = m.locale;
+        codeEl.value = m.code;
+        contentEl.value = m.content;
+        updateBtn.disabled = false;
+      } else {
+        showError('Failed to load message.');
+      }
+    } catch {
+      showError('Network error loading message.');
+    }
+  }
+
+  function showError(msg) {
+    errorDiv.textContent = msg;
+    errorDiv.classList.remove('d-none');
+  }
+
+  [codeEl, contentEl].forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      updateBtn.disabled = !form.checkValidity();
+      errorDiv.classList.add('d-none');
+    });
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    [codeEl, contentEl].forEach(validateField);
+    if (!form.checkValidity()) return;
+    updateBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const payload = {
+      code: codeEl.value.trim(),
+      content: contentEl.value.trim()
+    };
+
+    try {
+      const res = await apiRequest(window.updateMessageUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res?.status === 200) {
+        window.location.href = '/admin/message-management';
+      } else if (res?.status === 409) {
+        const field = res.data.field;
+        const detail = res.data.detail || 'Conflict occurred.';
+        if (field === 'code') {
+          codeEl.classList.add('is-invalid');
+          document.getElementById('codeFeedback').textContent = detail;
+        } else {
+          showError(detail);
+        }
+      } else {
+        showError(res.data?.detail || 'Update failed.');
+      }
+    } catch {
+      showError('Network error.');
+    } finally {
+      spinner.classList.add('d-none');
+      updateBtn.disabled = !form.checkValidity();
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

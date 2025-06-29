@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('My Profile', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-user me-1" aria-hidden="true"></i> My Profile
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">My Profile</h5>
+        </div>
+        <div class="card-body">
+
+          <div id="loadingSpinner" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading profile…</p>
+          </div>
+
+          <form id="profileForm" class="needs-validation d-none" novalidate>
+            <!-- Image Preview & Upload -->
+            <div class="text-center mb-4 d-none" id="imageContainer">
+              <img id="profileImage"
+                   src=""
+                   alt="Image"
+                   class="rounded-circle mb-2"
+                   style="width:120px;height:120px;object-fit:cover;">
+              <div class="mb-3 text-start">
+                <label for="imageInput" class="form-label">Upload Image</label>
+                <input
+                  type="file"
+                  id="imageInput"
+                  accept=".png,.jpeg,.jpg,.webp"
+                  class="form-control mb-2"
+                />
+                <div class="invalid-feedback text-start" id="imageFeedback"></div>
+                <button type="button"
+                        id="uploadImageBtn"
+                        class="btn btn-primary w-100 mt-2 mb-2"
+                        disabled>
+                  Upload
+                  <span id="uploadSpinner" class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+              <div class="mb-3">
+                <button type="button"
+                        id="deleteImageBtn"
+                        class="btn btn-danger w-100 d-none mb-3">
+                  Delete Image
+                </button>
+                <div id="uploadSuccess" class="alert alert-success text-center py-2 mt-1 d-none">
+                  Image uploaded successfully!
+                </div>
+                <div id="deleteSuccess" class="alert alert-success text-center py-2 mt-1 d-none">
+                  Avatar deleted successfully!
+                </div>
+                <div id="deleteError" class="alert alert-danger text-center py-2 mt-1 d-none">
+                </div>
+              </div>
+            </div>
+
+            <!-- Username (read-only) -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text"
+                     id="username"
+                     name="username"
+                     class="form-control bg-body-secondary text-muted"
+                     readonly />
+            </div>
+
+            <!-- Email (read-only) -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email"
+                     id="email"
+                     name="email"
+                     class="form-control bg-body-secondary text-muted"
+                     readonly />
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <div class="input-group">
+                <input type="text"
+                       id="firstName"
+                       name="firstName"
+                       class="form-control"
+                       required
+                       minlength="2"
+                       maxlength="50"
+                       pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                       data-pattern-msg="Only letters, single spaces or hyphens allowed."
+                       placeholder="Enter first name" />
+                <div class="invalid-feedback" id="firstNameFeedback"></div>
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <div class="input-group">
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       class="form-control"
+                       required
+                       minlength="2"
+                       maxlength="50"
+                       pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                       data-pattern-msg="Only letters, single spaces or hyphens allowed."
+                       placeholder="Enter last name" />
+                <div class="invalid-feedback" id="lastNameFeedback"></div>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-2">
+              <button type="button"
+                      class="btn btn-secondary w-100 w-md-auto"
+                      id="cancelBtn">
+                Cancel
+              </button>
+              <button type="submit"
+                      class="btn btn-primary w-100 w-md-auto"
+                      id="saveProfileBtn"
+                      disabled>
+                Save Changes
+                <span id="saveSpinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+            </div>
+            <!-- Delete Account -->
+            <div class="d-grid gap-2 mb-3">
+              <button type="button"
+                      id="deleteAccountBtn"
+                      class="btn btn-danger w-100">
+                Delete Account
+              </button>
+            </div>
+
+            <!-- Central Error -->
+            <div id="profileErrorMessage"
+                 class="alert alert-danger text-center py-2 mb-3"
+                 style="display: none;">
+            </div>
+          </form>
+
+          <!-- Success Message -->
+          <div id="profileSuccess"
+               class="alert alert-success text-center py-2 mt-3 d-none">
+            Your profile has been updated successfully!
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteImageModal" tabindex="-1" aria-labelledby="deleteImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteImageModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete your image?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="confirmDeleteImage" class="btn btn-danger">
+          Delete
+          <span id="deleteSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAccountModalLabel">Confirm Delete Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to permanently delete your account?</p>
+        <div class="mb-3">
+          <label for="currentPassword" class="form-label">Current Password</label>
+          <div class="input-group">
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              class="form-control"
+              placeholder="Enter current password"
+              required
+              minlength="8"
+              maxlength="64"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              id="toggleCurrentPassword"
+              tabindex="-1"
+              title="Show/Hide Password"
+            >
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback d-block" id="currentPasswordFeedback"></div>
+        </div>
+        <div id="deleteAccountError" class="alert alert-danger text-center py-2 mb-3 d-none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button"
+                id="confirmDeleteAccount"
+                class="btn btn-danger"
+                disabled>
+          Delete Account
+          <span id="deleteAccountSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  const DEFAULT_AVATAR = '/images/default-avatar.png';
+
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
+  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const form           = document.getElementById('profileForm');
+    const usernameInput  = document.getElementById('username');
+    const emailInput     = document.getElementById('email');
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput  = document.getElementById('lastName');
+    const saveBtn        = document.getElementById('saveProfileBtn');
+    const cancelBtn      = document.getElementById('cancelBtn');
+    const saveSpinner    = document.getElementById('saveSpinner');
+    const errorDiv       = document.getElementById('profileErrorMessage');
+    const successDiv     = document.getElementById('profileSuccess');
+
+    const imageContainer = document.getElementById('imageContainer');
+    const profileImage   = document.getElementById('profileImage');
+    const imageInput     = document.getElementById('imageInput');
+    const imageFeedback  = document.getElementById('imageFeedback');
+    const deleteBtn      = document.getElementById('deleteImageBtn');
+    const uploadImageBtn = document.getElementById('uploadImageBtn');
+    const uploadSpinner  = document.getElementById('uploadSpinner');
+    const uploadSuccess  = document.getElementById('uploadSuccess');
+    const deleteSuccess  = document.getElementById('deleteSuccess');
+    const deleteModal    = new bootstrap.Modal(document.getElementById('deleteImageModal'));
+    const confirmDelete  = document.getElementById('confirmDeleteImage');
+    const deleteSpinner  = document.getElementById('deleteSpinner');
+    const deleteError    = document.getElementById('deleteError');
+    const currentPasswordEl   = document.getElementById('currentPassword');
+    const toggleCurrentBtn    = document.getElementById('toggleCurrentPassword');
+
+    let originalFirstName = '';
+    let originalLastName  = '';
+
+    function toggleDeleteButton(url) {
+      // For new HTML, we use d-none to show/hide
+      if (url) {
+        deleteBtn.classList.remove('d-none');
+      } else {
+        deleteBtn.classList.add('d-none');
+      }
+    }
+
+    // 1) Load profile data
+    const res = await apiRequest('/api/account/profile', { method: 'GET' });
+    if (res && res.status === 200) {
+      const data = res.data;
+      const links = data._links || {};
+      window._links = links;
+
+      usernameInput.value  = data.username;
+      emailInput.value     = data.email;
+      firstNameInput.value = data.firstName;
+      lastNameInput.value  = data.lastName;
+      originalFirstName    = data.firstName;
+      originalLastName     = data.lastName;
+
+      profileImage.src = data.imageUrl || DEFAULT_AVATAR;
+      imageContainer.classList.remove('d-none');
+      toggleDeleteButton(data.imageUrl);
+      loadingSpinner.classList.add('d-none');
+      form.classList.remove('d-none');
+      if (data.protected) {
+        document.getElementById('deleteAccountBtn').classList.add('d-none');
+      }
+    } else {
+      errorDiv.textContent = res?.data?.detail || 'Could not load profile.';
+      errorDiv.style.display = 'block';
+      loadingSpinner.classList.add('d-none');
+      return;
+    }
+
+    toggleCurrentBtn.addEventListener('click', () => {
+      const type = currentPasswordEl.type === 'password' ? 'text' : 'password';
+      currentPasswordEl.type = type;
+      const icon = toggleCurrentBtn.querySelector('i');
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+
+    // 2) Validation
+    [ firstNameInput, lastNameInput ].forEach(el => {
+      el.addEventListener('input', () => {
+        validateField(el);
+        saveBtn.disabled = !form.checkValidity();
+        errorDiv.style.display = 'none';
+        successDiv.classList.add('d-none');
+      });
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      firstNameInput.value = originalFirstName;
+      lastNameInput.value  = originalLastName;
+      [ firstNameInput, lastNameInput ].forEach(validateField);
+      saveBtn.disabled = true;
+      errorDiv.style.display = 'none';
+      successDiv.classList.add('d-none');
+    });
+
+    // 3) Upload handler (new: validate & preview, then upload on button click)
+    // on file select: validate & preview
+    imageInput.addEventListener('change', () => {
+      imageFeedback.textContent = '';
+      deleteError.classList.add('d-none');
+      deleteSuccess.classList.add('d-none');
+      imageInput.classList.remove('is-invalid');
+      const file = imageInput.files[0];
+      if (file) {
+        if (!ALLOWED_TYPES.includes(file.type)) {
+          imageFeedback.textContent = `Invalid file type. Allowed: ${ALLOWED_TYPES.join(', ')}`;
+          imageInput.classList.add('is-invalid');
+          uploadImageBtn.disabled = true;
+          return;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+          imageFeedback.textContent = 'File size must be ≤ 2 MB.';
+          imageInput.classList.add('is-invalid');
+          uploadImageBtn.disabled = true;
+          return;
+        }
+        // preview
+        const reader = new FileReader();
+        reader.onload = () => profileImage.src = reader.result;
+        reader.readAsDataURL(file);
+        uploadImageBtn.disabled = false;
+      } else {
+        uploadImageBtn.disabled = true;
+      }
+    });
+
+    // on click: actually upload
+    uploadImageBtn.addEventListener('click', async () => {
+      imageFeedback.textContent = '';
+      uploadImageBtn.disabled = true;
+      uploadSpinner.classList.remove('d-none');
+      // Clear any existing delete messages when uploading a new image
+      deleteError.classList.add('d-none');
+      deleteSuccess.classList.add('d-none');
+      const file = imageInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await apiRequest(window._links?.['upload-avatar']?.href, {
+          method: 'PUT', body: formData });
+        if (res?.status === 200) {
+          const newUrl = res.data.imageUrl;
+          profileImage.src = newUrl;
+          toggleDeleteButton(newUrl);
+          uploadSuccess.classList.remove('d-none');
+          setTimeout(() => uploadSuccess.classList.add('d-none'), 3000);
+          updateProfileDetails({ imageUrl: newUrl });
+        } else {
+          imageFeedback.textContent = res.data?.detail || 'Upload failed.';
+          imageInput.classList.add('is-invalid');
+        }
+      } catch {
+        imageFeedback.textContent = 'Network error.';
+        imageInput.classList.add('is-invalid');
+      } finally {
+        uploadSpinner.classList.add('d-none');
+        uploadImageBtn.disabled = false;
+      }
+    });
+
+    // 4) Delete flow
+    deleteBtn.addEventListener('click', () => deleteModal.show());
+    confirmDelete.addEventListener('click', async () => {
+      confirmDelete.disabled = true;
+      deleteSpinner.classList.remove('d-none');
+      try {
+        deleteError.classList.add('d-none');
+        const res = await apiRequest(window._links?.['delete-avatar']?.href, { method: 'DELETE' });
+        if (res?.status === 204) {
+          deleteModal.hide();
+          profileImage.src = DEFAULT_AVATAR;
+          toggleDeleteButton(null);
+          deleteSuccess.classList.remove('d-none');
+          setTimeout(() => deleteSuccess.classList.add('d-none'), 3000);
+          imageInput.value = '';
+          updateProfileDetails({ imageUrl: DEFAULT_AVATAR });
+        } else {
+          deleteModal.hide();
+          deleteError.textContent = res.data?.detail || 'Delete failed.';
+          deleteError.classList.remove('d-none');
+        }
+      } catch (err) {
+        deleteModal.hide();
+        deleteError.textContent = err?.response?.data?.detail || err.message || 'Could not delete avatar.';
+        deleteError.classList.remove('d-none');
+      } finally {
+        // hide spinner and re-enable button
+        deleteSpinner.classList.add('d-none');
+        confirmDelete.disabled = false;
+      }
+    });
+
+    // 5) Save profile
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      [ firstNameInput, lastNameInput ].forEach(validateField);
+      if (!form.checkValidity()) return;
+      saveBtn.disabled = true;
+      saveSpinner.classList.remove('d-none');
+      const payload = {
+        firstName: firstNameInput.value.trim(),
+        lastName:  lastNameInput.value.trim()
+      };
+      const updateRes = await apiRequest(window._links?.['update']?.href, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      });
+      if (updateRes?.status === 200) {
+        originalFirstName = firstNameInput.value.trim();
+        originalLastName  = lastNameInput.value.trim();
+        successDiv.classList.remove('d-none');
+        updateProfileDetails({
+          firstName: originalFirstName,
+          lastName: originalLastName
+        });
+      } else {
+        errorDiv.textContent = updateRes?.data?.detail || 'Could not update profile.';
+        errorDiv.style.display = 'block';
+      }
+      saveSpinner.classList.add('d-none');
+      saveBtn.disabled = !form.checkValidity();
+    });
+
+    saveBtn.disabled = !form.checkValidity();
+
+    // Delete account flow
+    const deleteAccountModal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const confirmDeleteAccount = document.getElementById('confirmDeleteAccount');
+    const deleteAccountSpinner = document.getElementById('deleteAccountSpinner');
+    const deleteAccountError = document.getElementById('deleteAccountError');
+    currentPasswordEl.addEventListener('input', () => {
+      validateField(currentPasswordEl);
+      // Enable/disable confirm button based on validity
+      confirmDeleteAccount.disabled = !currentPasswordEl.checkValidity();
+      // Hide delete account error alert on input
+      deleteAccountError.classList.add('d-none');
+    });
+
+    deleteAccountBtn.addEventListener('click', () => {
+      deleteAccountModal.show();
+      // Reset and disable confirm button until a valid password is entered
+      confirmDeleteAccount.disabled = true;
+      currentPasswordEl.value = '';
+      currentPasswordEl.classList.remove('is-invalid');
+    });
+    confirmDeleteAccount.addEventListener('click', async () => {
+      // Hide delete account error alert at start of click handler
+      deleteAccountError.classList.add('d-none');
+      confirmDeleteAccount.disabled = true;
+      deleteAccountSpinner.classList.remove('d-none');
+      const pwd = currentPasswordEl.value.trim();
+      // Validate current password field using shared utility
+      validateField(currentPasswordEl);
+      if (!currentPasswordEl.checkValidity()) {
+        return;
+      }
+      try {
+        const res = await apiRequest(window._links?.['delete-account']?.href, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword: pwd })
+        });
+        if (res && res.status === 204) {
+          // redirect to logout or home
+          window.location.href = '/logout';
+        } else {
+          const deleteAccountError = document.getElementById('deleteAccountError');
+          deleteAccountError.textContent = res?.data?.detail || 'Could not delete account.';
+          deleteAccountError.classList.remove('d-none');
+        }
+      } catch (err) {
+        const deleteAccountError = document.getElementById('deleteAccountError');
+        deleteAccountError.textContent = err.message || 'Network error deleting account.';
+        deleteAccountError.classList.remove('d-none');
+      } finally {
+        deleteAccountSpinner.classList.add('d-none');
+        confirmDeleteAccount.disabled = false;
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+id;name;description;protected;created_at;created_by;updated_at;updated_by
+00969acc-0105-49fe-bea3-4618ccf29d2a;ROLE_ADMIN;Administrator role;true;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+10969acc-0105-49fe-bea3-4618ccf29d2a;ROLE_USER;User role;true;2025-05-10 13:00:00;system;2025-05-10 13:00:00;system

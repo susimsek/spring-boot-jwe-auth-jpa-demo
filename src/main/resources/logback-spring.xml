@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration scan="true">
+  <springProperty name="spring.application.name" source="spring.application.name" defaultValue="my-app"/>
+  <springProperty name="log.level" source="logging.level.root" defaultValue="INFO" />
+  <springProperty name="logging.pattern.console" source="logging.pattern.console" value="%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%5p){highlight} %clr(${PID:- }){magenta} --- [%clr(${spring.application.name:-}){green},%X{traceId:-},%X{spanId:-}] [%clr(%t){faint}] %clr(%-40.40logger{39}){cyan} %clr(:){faint} %msg%n%clr(%wEx){red}"/>
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+  <!-- Async appender wrapping console -->
+  <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="CONSOLE"/>
+    <queueSize>512</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+    <neverBlock>false</neverBlock>
+  </appender>
+
+  <logger name="io.github.susimsek.springbootjweauthjpademo" level="INFO"/>
+
+  <logger name="io.lettuce" level="WARN" />
+  <logger name="angus.activation" level="WARN"/>
+  <logger name="jakarta.activation" level="WARN"/>
+  <logger name="jakarta.mail" level="WARN"/>
+  <logger name="jakarta.management.remote" level="WARN"/>
+  <!-- Suppress JMX RMI MemoryUsage DEBUG logs -->
+  <logger name="javax.management.remote.rmi" level="WARN"/>
+  <logger name="jakarta.xml.bind" level="WARN"/>
+  <logger name="jdk.event.security" level="INFO"/>
+  <logger name="com.sun" level="WARN"/>
+  <logger name="com.zaxxer" level="WARN"/>
+  <logger name="io.undertow" level="WARN"/>
+  <logger name="org.apache" level="WARN"/>
+  <logger name="org.hibernate.validator" level="WARN"/>
+  <logger name="org.hibernate" level="WARN"/>
+  <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
+  <logger name="org.postgresql" level="WARN"/>
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="org.springframework.web" level="WARN"/>
+  <logger name="org.springframework.security" level="WARN"/>
+  <logger name="org.springframework.security.oauth2" level="WARN"/>
+  <logger name="org.springframework.boot.autoconfigure.logging" level="INFO"/>
+  <logger name="org.springframework.cache" level="WARN"/>
+  <logger name="org.thymeleaf" level="WARN"/>
+  <logger name="org.xnio" level="WARN"/>
+  <logger name="io.swagger.v3" level="INFO"/>
+  <logger name="io.github.bucket4j" level="WARN"/>
+  <logger name="sun.rmi" level="WARN"/>
+  <logger name="sun.rmi.transport" level="WARN"/>
+  <logger name="Validator" level="INFO"/>
+  <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
+  <logger name="org.springframework.boot.docker" level="WARN"/>
+  <logger name="liquibase" level="WARN"/>
+  <logger name="LiquibaseSchemaResolver" level="INFO"/>
+
+  <root level="${log.level}">
+    <appender-ref ref="ASYNC" />
+  </root>
+
+  <!-- Prevent logback from outputting its own status -->
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+  <!-- Reset the JUL logging level to avoid conflicts with Logback -->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+</configuration>

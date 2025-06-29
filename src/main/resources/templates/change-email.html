@@ -1,0 +1,214 @@
+<!-- src/main/resources/templates/change-email.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Change Email', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/profile}" class="text-decoration-none">
+          <i class="fa fa-user me-1" aria-hidden="true"></i> My Profile
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-envelope-open-text me-1" aria-hidden="true"></i> Change Email
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Change Email</h5>
+        </div>
+        <div class="card-body">
+          <form id="changeEmailForm" class="needs-validation" novalidate>
+            <!-- Current Password -->
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  class="form-control"
+                  placeholder="Enter current password"
+                  required
+                  minlength="8"
+                  maxlength="64"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="toggleCurrentPassword"
+                  tabindex="-1"
+                  title="Show/Hide Password"
+                >
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="currentPasswordFeedback"></div>
+            </div>
+
+            <!-- New Email -->
+            <div class="mb-3">
+              <label for="newEmail" class="form-label">New Email</label>
+              <input
+                type="email"
+                id="newEmail"
+                name="newEmail"
+                class="form-control"
+                placeholder="Enter new email"
+                required
+              />
+              <div class="invalid-feedback" id="newEmailFeedback"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="submitBtn"
+                      disabled>
+                Change Email
+                <span id="spinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Success / Error Messages -->
+            <div id="successMessage"
+                 class="alert alert-success text-center py-2 mb-3 d-none">
+              A confirmation email has been sent to your new address.<br/>
+              Please check your inbox and click the verification link to complete the change.
+            </div>
+            <div id="errorMessage"
+                 class="alert alert-danger text-center py-2 mb-3"
+                 style="display: none;">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript kısmı -->
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  const currentPasswordEl   = document.getElementById('currentPassword');
+  const newEmailEl          = document.getElementById('newEmail');
+  const toggleCurrentBtn    = document.getElementById('toggleCurrentPassword');
+  const changeForm          = document.getElementById('changeEmailForm');
+  const submitBtn           = document.getElementById('submitBtn');
+  const spinner             = document.getElementById('spinner');
+  const successDiv          = document.getElementById('successMessage');
+  const errorDiv            = document.getElementById('errorMessage');
+
+
+  toggleCurrentBtn.addEventListener('click', () => {
+    const type = currentPasswordEl.type === 'password' ? 'text' : 'password';
+    currentPasswordEl.type = type;
+    const icon = toggleCurrentBtn.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+  });
+
+  function toggleSubmitButton() {
+    const validPass = currentPasswordEl.checkValidity();
+    const validEmail = newEmailEl.checkValidity();
+    submitBtn.disabled = !(validPass && validEmail);
+  }
+
+  currentPasswordEl.addEventListener('input', () => {
+    validateField(currentPasswordEl);
+    toggleSubmitButton();
+    errorDiv.style.display = 'none';
+    successDiv.classList.add('d-none');
+  });
+
+  newEmailEl.addEventListener('input', () => {
+    validateField(newEmailEl);
+    toggleSubmitButton();
+    errorDiv.style.display = 'none';
+    successDiv.classList.add('d-none');
+  });
+
+  changeForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    errorDiv.style.display = 'none';
+    successDiv.classList.add('d-none');
+
+    validateField(currentPasswordEl);
+    validateField(newEmailEl);
+    if (!changeForm.checkValidity()) {
+      return;
+    }
+
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const payload = {
+      currentPassword: currentPasswordEl.value,
+      newEmail: newEmailEl.value.trim()
+    };
+
+    try {
+
+      const result = await apiRequest('/api/account/change-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!result) {
+        return;
+      }
+      const { status, data } = result;
+
+      if (status === 200) {
+        successDiv.classList.remove('d-none');
+        currentPasswordEl.value = '';
+        newEmailEl.value = '';
+        toggleSubmitButton();
+        return;
+      }
+
+      let msg = 'Could not change email. Please try again';
+
+
+      if (data && data.detail) {
+        msg = data.detail;
+      }
+
+      errorDiv.textContent = msg;
+      errorDiv.style.display = 'block';
+      submitBtn.disabled = false;
+
+    } catch (networkErr) {
+      errorDiv.textContent = 'Network error. Please try again.';
+      errorDiv.style.display = 'block';
+      submitBtn.disabled = false;
+    } finally {
+      spinner.classList.add('d-none');
+    }
+  });
+
+  toggleSubmitButton();
+  /*]]>*/
+</script>
+
+</body>
+</html>

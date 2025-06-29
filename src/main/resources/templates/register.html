@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Register', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-user-plus me-1" aria-hidden="true"></i> Register
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Create an Account</h5>
+        </div>
+        <div class="card-body">
+
+          <!-- 1) Kayıt Formu -->
+          <form id="registerForm" class="needs-validation" novalidate>
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="regUsername" class="form-label">Username</label>
+              <input type="text"
+                     id="regUsername"
+                     name="username"
+                     class="form-control"
+                     placeholder="Enter username"
+                     required
+                     minlength="3"
+                     maxlength="50"
+                     pattern="^[a-zA-Z0-9_\-]+$"
+                     data-pattern-msg="Only letters, numbers, underscores or hyphens allowed." />
+              <div class="invalid-feedback" id="regUsernameFeedback"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="regEmail" class="form-label">Email</label>
+              <input type="email"
+                     id="regEmail"
+                     name="email"
+                     class="form-control"
+                     placeholder="Enter email"
+                     required />
+              <div class="invalid-feedback" id="regEmailFeedback"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="regPassword" class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password"
+                       id="regPassword"
+                       name="password"
+                       class="form-control"
+                       placeholder="Enter password"
+                       required
+                       minlength="8"
+                       maxlength="64"
+                       pattern="(?=.*[A-ZÇĞİÖŞÜ])(?=.*[a-zçğıöşü])(?=.*\d).+"
+                       data-pattern-msg="Must contain at least one uppercase letter, one lowercase letter, and one digit." />
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="toggleregPassword"
+                        tabindex="-1"
+                        title="Show/Hide Password">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="regPasswordFeedback"></div>
+              <small class="form-text text-muted mt-1">Password strength:</small>
+              <div class="progress">
+                <div id="regPasswordStrengthBar"
+                     class="progress-bar"
+                     role="progressbar"
+                     style="width: 0%;"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+              <div class="input-group">
+                <input type="password"
+                       id="regConfirmPassword"
+                       name="confirmPassword"
+                       class="form-control"
+                       placeholder="Re-enter password"
+                       required />
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="toggleRegConfirmPassword"
+                        tabindex="-1"
+                        title="Show/Hide Password">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="regConfirmPasswordFeedback"></div>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <label for="regFirstName" class="form-label">First Name</label>
+              <input type="text"
+                     id="regFirstName"
+                     name="firstName"
+                     class="form-control"
+                     placeholder="Enter first name"
+                     required
+                     minlength="2"
+                     maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed." />
+              <div class="invalid-feedback" id="regFirstNameFeedback"></div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <label for="regLastName" class="form-label">Last Name</label>
+              <input type="text"
+                     id="regLastName"
+                     name="lastName"
+                     class="form-control"
+                     placeholder="Enter last name"
+                     required
+                     minlength="2"
+                     maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed." />
+              <div class="invalid-feedback" id="regLastNameFeedback"></div>
+            </div>
+
+            <!-- Enable MFA -->
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="regMfaEnabled"
+                     name="mfaEnabled" />
+              <label class="form-check-label" for="regMfaEnabled">
+                Enable Two-Factor Authentication
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="registerBtn"
+                      disabled>
+                Register
+                <span id="regSpinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Central Error -->
+            <div id="errorMessage"
+                 class="alert alert-danger text-center py-2 mb-3"
+                 style="display: none;">
+            </div>
+
+            <div class="text-center">
+              <small>Already have an account?
+                <a th:href="@{/login}">Login here</a>
+              </small>
+            </div>
+          </form>
+          <!-- /#registerForm -->
+
+
+          <!-- 2) Başarı Mesajı (Gizli Başlangıçta) -->
+          <div id="successSection" class="text-center py-4 d-none">
+            <i class="fa fa-check-circle fa-4x text-success mb-3"></i>
+            <p class="lead">
+              Your account has been created. A verification email has been sent to your address.
+            </p>
+            <p>
+              Please check your inbox (and spam folder) and click the verification link to complete registration.
+            </p>
+            <a th:href="@{/login}" class="btn btn-primary mt-3">
+              <i class="fa fa-arrow-left me-2"></i>Back to Login
+            </a>
+          </div>
+          <!-- /#successSection -->
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+
+  import {
+    apiRequest,
+    validateField,
+    toggleButton,
+    updateStrengthBar
+  } from [[@{/js/app.js}]];
+
+  // Form elemanlarını al
+  const registerForm   = document.getElementById('registerForm');
+  const usernameEl     = document.getElementById('regUsername');
+  const emailEl        = document.getElementById('regEmail');
+  const passwordEl     = document.getElementById('regPassword');
+  const firstNameEl    = document.getElementById('regFirstName');
+  const lastNameEl     = document.getElementById('regLastName');
+  const mfaSwitchEl    = document.getElementById('regMfaEnabled');
+  const registerBtn    = document.getElementById('registerBtn');
+  const strengthBarEl  = document.getElementById('regPasswordStrengthBar');
+  const errorDiv       = document.getElementById('errorMessage');
+  const successSection = document.getElementById('successSection');
+
+  // Tüm input’ları bir diziye koy
+  const inputs = [
+    usernameEl,
+    emailEl,
+    passwordEl,
+    firstNameEl,
+    lastNameEl
+  ];
+
+  // Her input için validate ve buton toggle
+  inputs.forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      registerBtn.disabled = !registerForm.checkValidity();
+      if (el === passwordEl) {
+        updateStrengthBar(passwordEl.value, strengthBarEl);
+      }
+      errorDiv.style.display = 'none';
+    });
+  });
+
+  // Şifre göster/gizle
+  document.getElementById('toggleregPassword')
+    .addEventListener('click', () => {
+      const type = passwordEl.type === 'password' ? 'text' : 'password';
+      passwordEl.type = type;
+      const icon = document.querySelector('#toggleregPassword i');
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+
+  const confirmPasswordEl = document.getElementById('regConfirmPassword');
+  const toggleConfirmPasswordBtn = document.getElementById('toggleRegConfirmPassword');
+  const confirmPasswordFeedback = document.getElementById('regConfirmPasswordFeedback');
+
+  // Show/hide for confirm password
+  toggleConfirmPasswordBtn.addEventListener('click', () => {
+    const type = confirmPasswordEl.type === 'password' ? 'text' : 'password';
+    confirmPasswordEl.type = type;
+    const icon = toggleConfirmPasswordBtn.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+  });
+
+  // Confirm-password match validation
+  function validateRegisterMatch() {
+    const pass = passwordEl.value.trim();
+    const conf = confirmPasswordEl.value.trim();
+
+    if (!conf) {
+      confirmPasswordEl.setCustomValidity('This field is required.');
+      confirmPasswordEl.classList.add('is-invalid');
+      confirmPasswordFeedback.textContent = 'This field is required.';
+      return;
+    }
+    if (pass !== conf) {
+      confirmPasswordEl.setCustomValidity('Passwords do not match.');
+      confirmPasswordEl.classList.add('is-invalid');
+      confirmPasswordFeedback.textContent = 'Passwords do not match.';
+      return;
+    }
+    confirmPasswordEl.setCustomValidity('');
+    confirmPasswordEl.classList.remove('is-invalid');
+    confirmPasswordFeedback.textContent = '';
+  }
+
+  // Toggle the register button
+  function toggleRegisterButton() {
+    const validUsername = usernameEl.checkValidity();
+    const validEmail    = emailEl.checkValidity();
+    const validPass     = passwordEl.checkValidity();
+    const validConfirm  = confirmPasswordEl.checkValidity();
+    registerBtn.disabled = !(validUsername && validEmail && validPass && validConfirm);
+  }
+
+  // Hook confirm-password events
+  confirmPasswordEl.addEventListener('input', () => {
+    validateField(confirmPasswordEl);
+    validateRegisterMatch();
+    toggleRegisterButton();
+    errorDiv.style.display = 'none';
+  });
+
+  // Update existing inputs to call toggleRegisterButton
+  [usernameEl, emailEl, passwordEl, firstNameEl, lastNameEl].forEach(el => {
+    el.removeEventListener('input', null); // ensure no duplicates
+    el.addEventListener('input', () => {
+      validateField(el);
+      if (el === passwordEl) {
+        updateStrengthBar(passwordEl.value, strengthBarEl);
+      }
+      validateRegisterMatch();
+      toggleRegisterButton();
+      errorDiv.style.display = 'none';
+    });
+  });
+
+  // Form submit handling
+  registerForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    errorDiv.style.display = 'none';
+
+    // Tüm input’ları kontrol et
+    inputs.forEach(el => validateField(el));
+    validateRegisterMatch();
+
+    if (!registerForm.checkValidity()) {
+      return;
+    }
+
+    registerBtn.disabled = true;
+    document.getElementById('regSpinner').classList.remove('d-none');
+
+    // JSON yükünü hazırla
+    const payload = {
+      username:   usernameEl.value.trim(),
+      password:   passwordEl.value,
+      email:      emailEl.value.trim(),
+      firstName:  firstNameEl.value.trim(),
+      lastName:   lastNameEl.value.trim(),
+      mfaEnabled: mfaSwitchEl.checked
+    };
+
+    try {
+      // apiRequest artık { status, data } dönecek
+      const result = await apiRequest('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Eğer yönlendirme olmuşsa result undefined dönebilir
+      if (!result) {
+        return;
+      }
+      const { status, data } = result;
+
+      // 201: Başarılı kayıt → formu gizleyip başarı bölümünü göster
+      if (status === 201) {
+        registerForm.classList.add('d-none');
+        successSection.classList.remove('d-none');
+        return;
+      }
+
+      // 409: Çakışma (username veya email)
+      if (status === 409) {
+        const field  = data?.field;
+        const detail = data?.detail || 'Conflict occurred.';
+
+        // Önce önceki invalid sınıflar kaldırılır
+        [usernameEl, emailEl].forEach(el => el.classList.remove('is-invalid'));
+        document.getElementById('regUsernameFeedback').textContent = '';
+        document.getElementById('regEmailFeedback').textContent = '';
+
+        if (field === 'username') {
+          usernameEl.classList.add('is-invalid');
+          document.getElementById('regUsernameFeedback').textContent = detail;
+        } else if (field === 'email') {
+          emailEl.classList.add('is-invalid');
+          document.getElementById('regEmailFeedback').textContent = detail;
+        } else {
+          // Bilinmeyen alan ise genel hata mesajı
+          errorDiv.textContent = detail;
+          errorDiv.style.display = 'block';
+        }
+
+      } else {
+        // Başka bir hata durumu
+        let defaultMsg = 'An unexpected error occurred. Please try again.';
+        if (data?.detail) defaultMsg = data.detail;
+        errorDiv.textContent = defaultMsg;
+        errorDiv.style.display = 'block';
+      }
+
+    } catch (networkErr) {
+      // Ağ hatası
+      errorDiv.textContent = 'Could not send request. Please try again.';
+      errorDiv.style.display = 'block';
+    } finally {
+      document.getElementById('regSpinner').classList.add('d-none');
+      registerBtn.disabled = !registerForm.checkValidity();
+    }
+  });
+
+  // İlk yüklemede strength bar’ı sıfırla ve butonu disable et
+  updateStrengthBar('', strengthBarEl);
+  registerBtn.disabled = !registerForm.checkValidity();
+  /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!-- src/main/resources/templates/login.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Login', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Login</h5>
+        </div>
+        <div class="card-body">
+          <form id="loginForm" class="needs-validation" novalidate>
+
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="loginUsername" class="form-label">Username</label>
+              <input
+                type="text"
+                id="loginUsername"
+                name="username"
+                class="form-control"
+                placeholder="Enter username"
+                required
+                minlength="3"
+                maxlength="50"
+                autocomplete="username"
+                autofocus />
+              <div class="invalid-feedback" id="loginUsernameFeedback"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="loginPassword" class="form-label">Password</label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  name="password"
+                  class="form-control"
+                  placeholder="Enter password"
+                  required
+                  minlength="8"
+                  maxlength="64"
+                  autocomplete="current-password" />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="toggleLoginPassword"
+                  tabindex="-1"
+                  title="Show/Hide Password">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="loginPasswordFeedback"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="loginBtn"
+                disabled>
+                Login
+                <span
+                  id="loginSpinner"
+                  class="spinner-border spinner-border-sm ms-2 d-none"
+                  role="status"
+                  aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Central Error Message -->
+            <div
+              id="errorMessage"
+              class="alert alert-danger text-center py-2 mb-3"
+              style="display: none;">
+            </div>
+
+            <!-- Lock Countdown Message -->
+            <div
+              id="lockCountdown"
+              class="alert alert-warning text-center py-2 mb-3"
+              style="display: none;">
+            </div>
+
+            <!-- Forgot Password (centered, on its own line) -->
+            <div class="text-center">
+              <a th:href="@{/forgot-password}" class="small">Forgot password?</a>
+            </div>
+
+            <!-- Register Link (centered, below) -->
+            <div class="text-center mt-3">
+              <small>Don’t have an account?
+                <a th:href="@{/register}">Register here</a>
+              </small>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Shared scripts (Bootstrap, custom JS) -->
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/app.js}" type="module"></script>
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  // Clear stored profile on login page load
+  localStorage.removeItem('profile');
+  // Grab form elements
+  const loginForm    = document.getElementById('loginForm');
+  const usernameEl   = document.getElementById('loginUsername');
+  const passwordEl   = document.getElementById('loginPassword');
+  const loginBtn     = document.getElementById('loginBtn');
+  const spinnerEl    = document.getElementById('loginSpinner');
+  const errorDiv     = document.getElementById('errorMessage');
+
+  // Array of inputs for validation toggling
+  const inputs = [ usernameEl, passwordEl ];
+
+  // On input, validate field and toggle submit button
+  inputs.forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      loginBtn.disabled = !loginForm.checkValidity();
+      errorDiv.style.display = 'none';
+      document.getElementById('lockCountdown').style.display = 'none';
+    });
+  });
+
+  // Show/Hide password toggle
+  document.getElementById('toggleLoginPassword')
+    .addEventListener('click', () => {
+      const type = passwordEl.type === 'password' ? 'text' : 'password';
+      passwordEl.type = type;
+      const icon = document.querySelector('#toggleLoginPassword i');
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+
+  // Form submission handler
+  loginForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    errorDiv.style.display = 'none';
+    document.getElementById('lockCountdown').style.display = 'none';
+
+    // Validate both fields again before sending
+    inputs.forEach(el => validateField(el));
+    if (!loginForm.checkValidity()) {
+      return;
+    }
+
+    loginBtn.disabled = true;
+    spinnerEl.classList.remove('d-none');
+
+    const payload = {
+      username: usernameEl.value.trim(),
+      password: passwordEl.value
+    };
+
+    try {
+      // 2) Login call
+      const loginResult = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!loginResult) return;
+
+      const { status, data } = loginResult;
+
+      if (status === 200) {
+        // 3a) MFA flow: if mfaToken present, skip profile and go to verify
+
+        if (data.mfaSetupRequired) {
+          window.location.href = '/mfa-setup?flow=LOGIN';
+          return;
+        } else if (data.mfaToken) {
+          window.location.href = '/verify-totp';
+          return;
+        } else if (data.accessToken) {
+          // Merge HATEOAS links into the profile object and store it
+          const profile = data.profile;
+          profile._links = data._links;
+          localStorage.setItem('profile', JSON.stringify(profile));
+          window.location.href = '/';
+          return;
+        }
+      }
+
+      if (status === 423) {
+        // Account locked
+        const expiresAt = data.expiresAt;
+        const msg = data?.detail || 'Your account is locked.';
+        errorDiv.textContent = msg;
+        errorDiv.style.display = 'block';
+        if (expiresAt) {
+          startLockCountdownFromExpiresAt(expiresAt);
+        }
+        return;
+      }
+
+      // 4) Authentication error or other
+      let msg = 'An unexpected error occurred. Please try again.';
+      if (status === 400 || status === 401) {
+        msg = data?.detail || 'Invalid username or password.';
+      } else if (data?.detail) {
+        msg = data.detail;
+      }
+      errorDiv.textContent = msg;
+      errorDiv.style.display = 'block';
+
+    } catch (err) {
+      errorDiv.textContent = 'Could not send request. Please try again.';
+      errorDiv.style.display = 'block';
+      console.error('Login error:', err);
+
+    } finally {
+      // 5) Always stop spinner & re-enable button
+      spinnerEl.classList.add('d-none');
+      loginBtn.disabled = !loginForm.checkValidity();
+    }
+    loginBtn.disabled = !loginForm.checkValidity();
+  });
+
+  /**
+   * Starts a countdown until the given ISO timestamp.
+   */
+  function startLockCountdownFromExpiresAt(expiresAt) {
+    const countdownEl = document.getElementById('lockCountdown');
+    countdownEl.style.display = 'block';
+    const expiryTime = new Date(expiresAt).getTime();
+    let interval = null;
+    function update() {
+      const now = Date.now();
+      let diff = Math.floor((expiryTime - now) / 1000);
+      if (diff <= 0) {
+        clearInterval(interval);
+        countdownEl.textContent = '00:00';
+        countdownEl.style.display = 'none';
+        loginBtn.disabled = !loginForm.checkValidity();
+        return;
+      }
+      const mins = String(Math.floor(diff / 60)).padStart(2, '0');
+      const secs = String(diff % 60).padStart(2, '0');
+      countdownEl.textContent = `Try again in ${mins}:${secs} minutes.`;
+    }
+    update();
+    interval = setInterval(update, 1000);
+  }
+  /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- src/main/resources/templates/error/403.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('403 Forbidden', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a th:href="@{/}" class="text-decoration-none">
+          <i class="fa fa-home me-1"></i>Home
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-lock me-1"></i>403 Forbidden
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">403 Forbidden</h5>
+        </div>
+        <div class="card-body text-center">
+          <p class="lead mb-4">
+            You don’t have permission to access this page.
+          </p>
+          <a th:href="@{/}" class="btn btn-primary">
+            <i class="fa fa-home me-1"></i> Go to Home Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Edit User', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/admin/user-management}" class="text-decoration-none">
+          <i class="fa fa-users me-1" aria-hidden="true"></i> User Management
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-edit me-1" aria-hidden="true"></i> Edit User
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Edit User</h5>
+        </div>
+        <div class="card-body">
+
+          <!-- Avatar Upload Section -->
+          <div class="text-center mb-4">
+            <img id="avatarPreview"
+                 src="/images/default-avatar.png"
+                 alt="Avatar"
+                 class="rounded-circle mb-2"
+                 style="width:120px;height:120px;object-fit:cover;">
+            <div>
+              <input class="form-control form-control-sm w-100 mb-3"
+                     type="file" id="avatarFile" accept=".png,.jpeg,.jpg,.webp">
+              <div class="invalid-feedback d-block text-start" id="avatarFeedback"></div>
+              <button class="btn btn-sm btn-primary w-100 mt-2 mb-3"
+                      id="uploadAvatarBtn"
+                      disabled>
+                Upload
+                <span id="avatarSpinner"
+                      class="spinner-border spinner-border-sm ms-1 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+              <div class="d-grid mb-2">
+                <button type="button"
+                        id="deleteAvatarBtn"
+                        class="btn btn-sm btn-danger w-100 d-none mb-3">
+                  Delete Image
+                </button>
+                <div id="avatarSuccess"
+                     class="alert alert-success text-center py-2 mt-1 d-none">
+                  Avatar uploaded successfully!
+                </div>
+                <div id="deleteSuccess"
+                     class="alert alert-success text-center py-2 mt-1 d-none">
+                  Avatar deleted successfully!
+                </div>
+                <div id="avatarDeleteError"
+                     class="alert alert-danger text-center py-2 mt-1 d-none">
+                </div>
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteAvatarModal" tabindex="-1" aria-labelledby="deleteAvatarModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteAvatarModalLabel">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to delete the avatar?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirmDeleteAvatar" class="btn btn-danger">
+                          Delete
+                          <span id="deleteSpinner" class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit User Form -->
+          <form id="editForm" class="needs-validation" novalidate>
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text"
+                     id="username"
+                     name="username"
+                     class="form-control"
+                     required
+                     minlength="3" maxlength="50"
+                     pattern="^[a-zA-Z0-9_\-]+$"
+                     data-pattern-msg="Only letters, numbers, underscores or hyphens allowed.">
+              <div class="invalid-feedback" id="usernameFeedback"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email"
+                     id="email"
+                     name="email"
+                     class="form-control"
+                     required>
+              <div class="invalid-feedback" id="emailFeedback"></div>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text"
+                     id="firstName"
+                     name="firstName"
+                     class="form-control"
+                     required
+                     minlength="2" maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed.">
+              <div class="invalid-feedback" id="firstNameFeedback"></div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <label for="lastName" class="form-label"> Last Name</label>
+              <input type="text"
+                     id="lastName"
+                     name="lastName"
+                     class="form-control"
+                     required
+                     minlength="2" maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed.">
+              <div class="invalid-feedback" id="lastNameFeedback"></div>
+            </div>
+
+            <!-- Authorities -->
+            <div class="mb-3">
+              <label for="authorities" class="form-label">Authorities</label>
+              <select id="authorities"
+                      name="authorities"
+                      class="form-select"
+                      multiple
+                      required>
+                <!-- populated by JS -->
+              </select>
+              <div class="invalid-feedback" id="authoritiesFeedback"></div>
+            </div>
+
+            <!-- Enabled Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="enabled"
+                     name="enabled">
+              <label class="form-check-label" for="enabled">Enabled</label>
+            </div>
+
+            <!-- MFA Enabled Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="mfaEnabled"
+                     name="mfaEnabled">
+              <label class="form-check-label" for="mfaEnabled">MFA Enabled</label>
+            </div>
+
+            <!-- Protected Flag Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="protectedFlag"
+                     name="protectedFlag">
+              <label class="form-check-label" for="protectedFlag">Protected (cannot delete)</label>
+            </div>
+
+            <!-- Locked Flag Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="locked"
+                     name="locked">
+              <label class="form-check-label" for="locked">Locked</label>
+            </div>
+
+            <!-- Save Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="updateBtn"
+                      disabled>
+                Save Changes
+                <span id="updateSpinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                      aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Global Error -->
+            <div id="formError"
+                 class="alert alert-danger text-center py-2 d-none"></div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { validateField, apiRequest, updateProfileDetails } from '/js/app.js';
+
+  const DEFAULT_AVATAR = '/images/default-avatar.png';
+
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+  // form controls
+  const form       = document.getElementById('editForm');
+  const updateBtn  = document.getElementById('updateBtn');
+  const spinner    = document.getElementById('updateSpinner');
+  const errorDiv   = document.getElementById('formError');
+  const select     = document.getElementById('authorities');
+
+  // avatar controls
+  const avatarFile    = document.getElementById('avatarFile');
+  const uploadBtn     = document.getElementById('uploadAvatarBtn');
+  const avatarSpin    = document.getElementById('avatarSpinner');
+  const avatarImg     = document.getElementById('avatarPreview');
+  const avatarFb      = document.getElementById('avatarFeedback');
+  const avatarSuccess = document.getElementById('avatarSuccess');
+  const deleteBtn     = document.getElementById('deleteAvatarBtn');
+  const deleteSuccess = document.getElementById('deleteSuccess');
+  const deleteSpinner = document.getElementById('deleteSpinner');
+  const avatarDeleteError = document.getElementById('avatarDeleteError');
+  let deleteModal;
+
+  // Inputs to validate
+  const inputs = ['username','email','firstName','lastName','authorities']
+    .map(id => document.getElementById(id));
+
+  // extract userId
+  const path = window.location.pathname.split('/');
+  const userId = path[path.length - 1];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    deleteModal = new bootstrap.Modal(document.getElementById('deleteAvatarModal'));
+    init();
+  });
+
+  // load initial data
+  async function init() {
+    try {
+      // load authorities
+      const resAuth = await apiRequest('/api/admin/authorities');
+      if (resAuth?.status === 200) {
+        resAuth.data.forEach(({ name, description }) => {
+          const opt = document.createElement('option');
+          opt.value = name; opt.text = name;
+          if (description) opt.title = description;
+          select.appendChild(opt);
+        });
+      }
+      // load user
+      const resUser = await apiRequest(`/api/admin/users/${userId}`);
+      // HATEOAS links from server
+      const links = resUser.data._links || {};
+      // URLs for update and avatar operations
+      window.updateUserUrl = links.update?.href;
+      window.uploadAvatarUrl = links['upload-avatar']?.href;
+      window.deleteAvatarUrl = links['delete-avatar']?.href;
+      if (resUser?.status === 200) {
+        const u = resUser.data;
+        form.username.value  = u.username;
+        form.email.value     = u.email;
+        form.firstName.value = u.firstName || '';
+        form.lastName.value  = u.lastName || '';
+        form.enabled.checked = !!u.enabled;
+        form.mfaEnabled.checked = !!u.mfaEnabled;
+        form.protectedFlag.checked = !!u.protected;
+        form.locked.checked = !!u.locked;
+        u.authorities.forEach(r => {
+          const o = select.querySelector(`option[value="${r}"]`);
+          if (o) o.selected = true;
+        });
+        if (u.imageUrl) {
+          avatarImg.src = u.imageUrl;
+          deleteBtn.classList.remove('d-none');
+        }
+        updateBtn.disabled = false;
+      } else {
+        showError('Failed to load user.');
+      }
+    } catch {
+      showError('Network error loading data.');
+    }
+  }
+
+  function showError(msg) {
+    errorDiv.textContent = msg;
+    errorDiv.classList.remove('d-none');
+  }
+
+  // validate fields
+  inputs.forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      updateBtn.disabled = !form.checkValidity();
+      errorDiv.classList.add('d-none');
+    });
+  });
+
+  // preview + validate file
+  avatarFile.addEventListener('change', () => {
+    avatarFb.textContent = '';
+    avatarFile.classList.remove('is-invalid');
+    avatarDeleteError.classList.add('d-none');
+    deleteSuccess.classList.add('d-none');
+    const file = avatarFile.files[0];
+    if (!file) {
+      uploadBtn.disabled = true;
+      return;
+    }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      avatarFb.textContent = `Invalid file type. Allowed: ${ALLOWED_TYPES.join(', ')}`;
+      avatarFile.classList.add('is-invalid');
+      uploadBtn.disabled = true;
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      avatarFb.textContent = 'File size cannot exceed 2 MB.';
+      avatarFile.classList.add('is-invalid');
+      uploadBtn.disabled = true;
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => avatarImg.src = reader.result;
+    reader.readAsDataURL(file);
+    uploadBtn.disabled = false;
+  });
+
+  // upload on button click
+  uploadBtn.addEventListener('click', async () => {
+    avatarFb.textContent = '';
+    avatarDeleteError.classList.add('d-none');
+    deleteSuccess.classList.add('d-none');
+    uploadBtn.disabled = true;
+    avatarSpin.classList.remove('d-none');
+    const file = avatarFile.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await apiRequest(window.uploadAvatarUrl, {
+        method: 'PUT',
+        body: formData
+      });
+      if (res?.status === 200) {
+        const newUrl = res.data.imageUrl;
+        avatarSuccess.classList.remove('d-none');
+        deleteBtn.classList.remove('d-none');
+        // update global profile if this is the logged‑in user
+        const storedProfile = JSON.parse(localStorage.getItem('profile') || '{}');
+        if (storedProfile.id === userId) {
+          updateProfileDetails({
+            imageUrl: newUrl
+          });
+        }
+        setTimeout(() => avatarSuccess.classList.add('d-none'), 3000);
+      } else {
+        avatarFb.textContent = res.data?.detail || 'Upload failed.';
+        avatarFile.classList.add('is-invalid');
+      }
+    } catch {
+      avatarFb.textContent = 'Network error.';
+      avatarFile.classList.add('is-invalid');
+    } finally {
+      avatarSpin.classList.add('d-none');
+      uploadBtn.disabled = false;
+    }
+  });
+
+  // delete flow
+  deleteBtn.addEventListener('click', () => deleteModal.show());
+  document.getElementById('confirmDeleteAvatar').addEventListener('click', async () => {
+    avatarFb.textContent = '';
+    avatarDeleteError.classList.add('d-none');
+    deleteBtn.disabled = true;
+    deleteSpinner.classList.remove('d-none');
+    try {
+      const res = await apiRequest(window.deleteAvatarUrl, { method: 'DELETE' });
+      if (res?.status === 204) {
+        deleteModal.hide();
+        avatarImg.src = DEFAULT_AVATAR;
+        avatarFile.value = '';
+        uploadBtn.disabled = true;
+        deleteBtn.classList.add('d-none');
+        deleteSuccess.classList.remove('d-none');
+        setTimeout(() => deleteSuccess.classList.add('d-none'), 3000);
+        const storedProfile = JSON.parse(localStorage.getItem('profile') || '{}');
+        if (storedProfile.id === userId) {
+          updateProfileDetails({
+            imageUrl: DEFAULT_AVATAR
+          });
+        }
+      } else {
+        deleteModal.hide();
+        avatarDeleteError.textContent = res.data?.detail || 'Delete failed.';
+        avatarDeleteError.classList.remove('d-none');
+      }
+    } catch {
+      deleteModal.hide();
+      avatarDeleteError.textContent = 'Network error.';
+      avatarDeleteError.classList.remove('d-none');
+    } finally {
+      deleteSpinner.classList.add('d-none');
+      deleteBtn.disabled = false;
+    }
+  });
+
+  // submit edit form
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    inputs.forEach(validateField);
+    if (!form.checkValidity()) return;
+    updateBtn.disabled = true;
+    spinner.classList.remove('d-none');
+    const payload = {
+      username:    form.username.value.trim(),
+      email:       form.email.value.trim(),
+      firstName:   form.firstName.value.trim(),
+      lastName:    form.lastName.value.trim(),
+      enabled:     form.enabled.checked,
+      mfaEnabled:  form.mfaEnabled.checked,
+      protected: form.protectedFlag.checked,
+      locked:    form.locked.checked,
+      authorities: Array.from(select.selectedOptions).map(o => o.value)
+    };
+    try {
+      const res = await apiRequest(window.updateUserUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res?.status === 200) {
+        const storedProfile = JSON.parse(localStorage.getItem('profile') || '{}');
+        if (storedProfile.id === userId) {
+          const u = res.data;
+          updateProfileDetails({
+            username: u.username,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            imageUrl: u.imageUrl,
+            email: u.email,
+            authorities: u.authorities,
+            protected: u.protected
+          });
+        }
+        window.location.href = '/admin/user-management';
+      } else if (res?.status === 409) {
+        ['username','email'].forEach(id => document.getElementById(id).classList.remove('is-invalid'));
+        const f = res.data.field, d = res.data.detail || 'Conflict occurred.';
+        if (f === 'username') {
+          document.getElementById('username').classList.add('is-invalid');
+          document.getElementById('usernameFeedback').textContent = d;
+        } else if (f === 'email') {
+          document.getElementById('email').classList.add('is-invalid');
+          document.getElementById('emailFeedback').textContent = d;
+        } else showError(d);
+      } else {
+        showError(res.data?.detail || 'Update failed.');
+      }
+    } catch {
+      showError('Network error.');
+    } finally {
+      spinner.classList.add('d-none');
+      updateBtn.disabled = !form.checkValidity();
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

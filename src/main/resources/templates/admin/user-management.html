@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('User Management', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-users me-1" aria-hidden="true"></i> User Management
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<div class="container-fluid px-0">
+  <div class="card shadow-sm rounded-0">
+    <!-- Header: title, create button, search -->
+    <div class="card-header">
+      <div class="d-flex flex-column flex-md-row align-items-start mb-3 mt-1">
+        <h5 class="me-md-auto mb-2 mb-md-0">User Management</h5>
+        <button class="btn btn-primary"
+                id="createUserBtn">
+          <i class="fa fa-plus me-1"></i>Create User
+        </button>
+      </div>
+      <div id="alertContainer" class="alert alert-danger text-center d-none" role="alert"></div>
+      <div id="deleteAlert" class="alert alert-success text-center d-none mt-2" role="alert">
+        User deleted successfully.
+      </div>
+      <div class="mt-3">
+        <div class="input-group">
+          <input type="text"
+                 id="quickFilter"
+                 class="form-control"
+                 placeholder="Quick search…"
+                 maxlength="100"/>
+          <span class="input-group-text">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </span>
+          <div class="invalid-feedback" id="quickFilterFeedback"></div>
+        </div>
+      </div>
+      <div class="mt-2 d-flex align-items-center gap-2">
+        <!-- Column Filter Button -->
+        <span id="columnFilterBtn" class="input-group-text">
+          <i class="fa fa-filter"></i>
+        </span>
+        <!-- Authority Filter -->
+        <div class="input-group input-group-sm w-auto me-2">
+          <span class="input-group-text"><i class="fa fa-shield-alt"></i></span>
+          <select id="authorityFilter" class="form-select">
+            <option value="">All Authorities</option>
+          </select>
+        </div>
+        <!-- Enabled Status Filter -->
+        <div class="input-group input-group-sm w-auto me-2">
+          <span class="input-group-text"><i class="fa fa-toggle-on"></i></span>
+          <select id="enabledFilter" class="form-select">
+            <option value="">All Enabled</option>
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+          </select>
+        </div>
+        <!-- MFA Filter -->
+        <div class="input-group input-group-sm w-auto me-2">
+          <span class="input-group-text"><i class="fa fa-lock"></i></span>
+          <select id="mfaFilter" class="form-select">
+            <option value="">All MFA</option>
+            <option value="true">MFA Enabled</option>
+            <option value="false">MFA Disabled</option>
+          </select>
+        </div>
+        <!-- Protected Filter -->
+        <div class="input-group input-group-sm w-auto me-2">
+          <span class="input-group-text"><i class="fa fa-shield-alt"></i></span>
+          <select id="protectedFilter" class="form-select">
+            <option value="">All Protected</option>
+            <option value="true">Protected</option>
+            <option value="false">Unprotected</option>
+          </select>
+        </div>
+        <!-- Locked Status Filter -->
+        <div class="input-group input-group-sm w-auto">
+          <span class="input-group-text"><i class="fa fa-lock"></i></span>
+          <select id="lockedFilter" class="form-select">
+            <option value="">All Locked</option>
+            <option value="true">Locked</option>
+            <option value="false">Unlocked</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body: spinner + table -->
+    <div class="card-body p-0"
+         style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+      <div id="loadingSpinner" class="text-center py-4 d-none">
+        <div class="spinner-border" role="status"><span class="visually-hidden">Loading…</span></div>
+        <p class="mt-2 mb-0">Loading users…</p>
+      </div>
+      <div class="table-responsive px-3">
+        <table class="table table-striped table-hover align-middle mb-0">
+          <thead>
+          <tr>
+            <th data-field="username" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              Username <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th>Avatar</th>
+            <th data-field="firstName" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              First Name <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th data-field="lastName" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              Last Name <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th data-field="enabled" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              Enabled <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th data-field="createdAt" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              Created At <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th data-field="updatedAt" class="sortable" tabindex="0" role="columnheader" aria-sort="none" style="cursor: pointer;">
+              Updated At <i class="fa fa-sort sort-icon" aria-hidden="true"></i>
+            </th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody id="userTableBody">
+          <!-- injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer: info, pagination, size selector -->
+    <div class="card-footer d-flex align-items-center">
+      <!-- Info -->
+      <small id="tableInfo" class="text-muted">Showing 0–0 of 0 users</small>
+      <!-- Pagination -->
+      <nav class="mx-auto">
+        <ul class="pagination mb-0" id="pagination"></ul>
+      </nav>
+      <!-- Page size -->
+      <div class="d-flex align-items-center">
+        <label for="pageSizeSelect" class="me-2 mb-0">Size:</label>
+        <select id="pageSizeSelect"
+                class="form-select form-select-sm w-auto">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="userDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="detailBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1"
+     aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete this user?</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">
+          Delete
+          <span id="confirmDeleteSpinner" class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { apiRequest, validateField } from '/js/app.js';
+
+  const DEFAULT_AVATAR = '/images/default-avatar.png';
+  const BADGE_COLORS   = ['primary','warning','success','danger','secondary','info'];
+
+  function hashString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = ((h << 5) - h) + str.charCodeAt(i);
+      h |= 0;
+    }
+    return h;
+  }
+  function getBadgeColor(role) {
+    return BADGE_COLORS[Math.abs(hashString(role)) % BADGE_COLORS.length];
+  }
+
+let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete = null, deleteUrl = null;
+  // Tri-state sort: 0 = none, 1 = asc, 2 = desc
+  let sortState = 0;
+  let currentSortField = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // controls
+    const quickInput = document.getElementById('quickFilter');
+
+    quickInput.addEventListener('input', debounce(() => {
+      validateField(quickInput);
+      currentPage = 1;
+      loadUsers();
+    }, 300));
+    document.getElementById('createUserBtn')
+      .addEventListener('click', () => location.href = '/admin/create-user');
+    document.getElementById('pageSizeSelect')
+      .addEventListener('change', e => {
+        pageSize = +e.target.value;
+        currentPage = 1;
+        loadUsers();
+      });
+
+    // Populate authority filter from service
+    const authoritySelect = document.getElementById('authorityFilter');
+    apiRequest('/api/admin/authorities')
+      .then(res => {
+        if (res && res.status === 200) {
+          res.data.forEach(auth => {
+            const opt = document.createElement('option');
+            opt.value = auth.name;
+            opt.textContent = auth.name;
+            authoritySelect.appendChild(opt);
+          });
+        }
+      })
+      .catch(() => showAlert('Failed to load authorities.', 'warning'));
+
+    // Reload on filter change
+    document.getElementById('authorityFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('enabledFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('mfaFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('protectedFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    // Locked status filter
+    document.getElementById('lockedFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+
+    loadUsers();
+
+    // Tri-state sort on all sortable headers
+    document.querySelectorAll('.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const field = th.dataset.field;
+        if (currentSortField !== field) {
+          currentSortField = field;
+          sortState = 1;
+        } else {
+          sortState = (sortState + 1) % 3;
+          if (sortState === 0) currentSortField = null;
+        }
+        // Update icons and aria-sort on all headers
+        document.querySelectorAll('.sortable').forEach(el => {
+          const icon = el.querySelector('.sort-icon');
+          const isActive = el.dataset.field === currentSortField;
+          el.setAttribute('aria-sort', isActive
+            ? sortState === 1 ? 'ascending' : 'descending'
+            : 'none');
+          icon.className = 'fa sort-icon ' + (
+            !isActive       ? 'fa-sort' :
+            sortState === 1  ? 'fa-sort-up' :
+            sortState === 2  ? 'fa-sort-down' : 'fa-sort'
+          );
+        });
+        currentPage = 1;
+        loadUsers();
+      });
+    });
+  });
+
+  async function loadUsers() {
+    toggleSpinner(true);
+    const filter = document.getElementById('quickFilter').value.trim();
+    const params = [
+      `page=${currentPage-1}`,
+      `size=${pageSize}`
+    ];
+    const selectedAuthority = document.getElementById('authorityFilter').value;
+    if (selectedAuthority) {
+      params.push(`authority=${encodeURIComponent(selectedAuthority)}`);
+    }
+    const selectedEnabled = document.getElementById('enabledFilter').value;
+    if (selectedEnabled) {
+      params.push(`enabled=${selectedEnabled}`);
+    }
+    const selectedMfa = document.getElementById('mfaFilter').value;
+    if (selectedMfa) {
+      params.push(`mfaEnabled=${selectedMfa}`);
+    }
+    const selectedProtected = document.getElementById('protectedFilter').value;
+    if (selectedProtected) {
+      params.push(`protectedFlag=${selectedProtected}`);
+    }
+    const selectedLocked = document.getElementById('lockedFilter').value;
+    if (selectedLocked) {
+      params.push(`locked=${selectedLocked}`);
+    }
+    if (currentSortField) {
+      const dir = sortState === 1 ? 'asc' : 'desc';
+      params.push(`sort=${currentSortField},${dir}`);
+    }
+    if (filter) params.push(`search=${encodeURIComponent(filter)}`);
+    const res = await apiRequest(`/api/admin/users?${params.join('&')}`);
+
+    toggleSpinner(false);
+
+    if (!res || res.status !== 200) {
+      return showAlert('Failed to load users.', 'danger');
+    }
+
+    const pageData = res.data.page;
+    const list = res.data._embedded?.users || [];
+    users = list;
+    totalItems = pageData.totalElements;
+    currentPage = pageData.number + 1;
+
+    renderTable();
+    renderPagination(pageData.totalPages);
+    renderInfo();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('userTableBody');
+    tbody.innerHTML = '';
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center py-3">No users found.</td></tr>';
+      return;
+    }
+    const storedProfile = JSON.parse(localStorage.getItem('profile') || '{}');
+    users.forEach(u => {
+      const deleteButtonHtml = (!u.protected && u.id !== storedProfile.id)
+        ? `<button class="btn btn-sm btn-outline-danger" data-id="${u.id}" data-action="delete" title="Delete"><i class="fa fa-trash"></i></button>`
+        : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${u.username}</td>
+        <td><img src="${u.imageUrl||DEFAULT_AVATAR}"
+                 class="rounded-circle" width="32" height="32"></td>
+        <td>${u.firstName||''}</td>
+        <td>${u.lastName||''}</td>
+        <td>
+          <div class="form-check form-switch">
+            <input class="form-check-input toggle-enabled" type="checkbox" data-id="${u.id}" ${u.enabled?'checked':''}>
+          </div>
+        </td>
+        <td>${new Date(u.createdAt).toLocaleString()}</td>
+        <td>${new Date(u.updatedAt).toLocaleString()}</td>
+        <td>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-sm btn-outline-info me-1"
+                    data-id="${u.id}" data-action="detail"
+                    title="Details"><i class="fa fa-info-circle"></i></button>
+            <button class="btn btn-sm btn-outline-secondary me-1"
+                    data-id="${u.id}" data-action="edit"
+                    title="Edit"><i class="fa fa-edit"></i></button>
+            ${deleteButtonHtml}
+          </div>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('button').forEach(btn => btn.addEventListener('click', onAction));
+  }
+
+  function renderPagination(totalPages) {
+    const ul = document.getElementById('pagination');
+    ul.innerHTML = '';
+
+    // First page button
+    const firstLi = document.createElement('li');
+    firstLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    firstLi.innerHTML = `<button class="page-link" aria-label="First"><i class="fa fa-angle-double-left"></i></button>`;
+    firstLi.firstElementChild.onclick = () => { if (currentPage !== 1) { currentPage = 1; loadUsers(); } };
+    ul.appendChild(firstLi);
+
+    // Previous page button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<button class="page-link" aria-label="Previous"><i class="fa fa-angle-left"></i></button>`;
+    prevLi.firstElementChild.onclick = () => { if (currentPage > 1) { currentPage--; loadUsers(); } };
+    ul.appendChild(prevLi);
+
+    // Page numbers with ellipses
+    let hasSkipped = false;
+    for (let page = 1; page <= totalPages; page++) {
+      const isEdge = page === 1 || page === totalPages;
+      const isSibling = Math.abs(page - currentPage) <= 1;
+      if (isEdge || isSibling) {
+        hasSkipped = false;
+        const li = document.createElement('li');
+        li.className = `page-item ${page === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<button class="page-link">${page}</button>`;
+        li.firstElementChild.onclick = () => { currentPage = page; loadUsers(); };
+        ul.appendChild(li);
+      } else if (!hasSkipped) {
+        hasSkipped = true;
+        const li = document.createElement('li');
+        li.className = 'page-item disabled';
+        li.innerHTML = '<span class="page-link">...</span>';
+        ul.appendChild(li);
+      }
+    }
+
+    // Next page button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<button class="page-link" aria-label="Next"><i class="fa fa-angle-right"></i></button>`;
+    nextLi.firstElementChild.onclick = () => { if (currentPage < totalPages) { currentPage++; loadUsers(); } };
+    ul.appendChild(nextLi);
+
+    // Last page button
+    const lastLi = document.createElement('li');
+    lastLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    lastLi.innerHTML = `<button class="page-link" aria-label="Last"><i class="fa fa-angle-double-right"></i></button>`;
+    lastLi.firstElementChild.onclick = () => { if (currentPage !== totalPages) { currentPage = totalPages; loadUsers(); } };
+    ul.appendChild(lastLi);
+  }
+
+  function renderInfo() {
+    const start = totalItems === 0 ? 0 : (currentPage-1)*pageSize + 1;
+    const end   = Math.min(currentPage*pageSize, totalItems);
+    document.getElementById('tableInfo').textContent =
+      `Showing ${start}–${end} of ${totalItems} users`;
+  }
+
+  async function onAction(e) {
+    const id  = e.currentTarget.dataset.id;
+    const act = e.currentTarget.dataset.action;
+    if (act === 'edit') {
+      window.location.href = `/admin/edit-user/${id}`;
+    }
+    else if (act === 'delete') {
+      const u = users.find(x=>x.id===id);
+      userIdToDelete = id;
+      deleteUrl = u._links.delete.href;
+      new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+    }
+    else if (act === 'detail') {
+      const u = users.find(x=>x.id===id);
+      showDetail(u);
+    }
+  }
+
+  function showDetail(u) {
+    const body = document.getElementById('detailBody');
+    body.innerHTML = `
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <img src="${u.imageUrl||DEFAULT_AVATAR}"
+               class="rounded-circle mb-3" width="120" height="120">
+        </div>
+        <div class="col-md-8">
+          <p><strong><i class="fa fa-user me-1"></i>Username:</strong> ${u.username}</p>
+          <p><strong><i class="fa fa-envelope me-1"></i>Email:</strong> ${u.email}</p>
+          <p><strong><i class="fa fa-id-badge me-1"></i>First Name:</strong> ${u.firstName||'-'}</p>
+          <p><strong><i class="fa fa-id-badge me-1"></i>Last Name:</strong> ${u.lastName||'-'}</p>
+          <p><strong><i class="fa fa-calendar-plus me-1"></i>Created At:</strong> ${new Date(u.createdAt).toLocaleString()}</p>
+          <p><strong><i class="fa fa-calendar-check me-1"></i>Updated At:</strong> ${new Date(u.updatedAt).toLocaleString()}</p>
+          <p><strong><i class="fa fa-toggle-on me-1"></i>Enabled:</strong> ${u.enabled?'Yes':'No'}</p>
+          <p><strong><i class="fa fa-lock me-1"></i>MFA Enabled:</strong> ${u.mfaEnabled?'Yes':'No'}</p>
+          <p><strong><i class="fa fa-shield-alt me-1"></i>Protected:</strong> ${u.protected ? 'Yes' : 'No'}</p>
+          <p><strong><i class="fa fa-lock me-1"></i>Locked:</strong> ${u.locked ? 'Yes' : 'No'}</p>
+          <p><strong><i class="fa fa-shield-alt me-1"></i>Authorities:</strong>
+            ${u.authorities.map(r=>
+      `<span class="badge bg-${getBadgeColor(r)} me-1">${r}</span>`
+    ).join('')}
+          </p>
+        </div>
+      </div>`;
+    new bootstrap.Modal(document.getElementById('userDetailModal')).show();
+  }
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('confirmDeleteBtn');
+    const spinner = document.getElementById('confirmDeleteSpinner');
+    const modalEl = document.getElementById('deleteConfirmModal');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    if (!userIdToDelete) {
+      spinner.classList.add('d-none');
+      btn.disabled = false;
+      return;
+    }
+
+    try {
+      const res = await apiRequest(deleteUrl, { method:'DELETE' });
+      if (res && (res.status === 204)) {
+        modal.hide();
+        loadUsers();
+        const deleteAlert = document.getElementById('deleteAlert');
+        deleteAlert.classList.remove('d-none');
+        setTimeout(() => deleteAlert.classList.add('d-none'), 3000);
+      } else {
+        modal.hide();
+        const detail = res?.data?.detail || 'Unable to delete user.';
+        showAlert(detail, 'danger');
+      }
+    } catch (err) {
+      showAlert('Network error deleting user.', 'danger');
+    } finally {
+      spinner.classList.add('d-none');
+      btn.disabled = false;
+    }
+  });
+
+  function toggleSpinner(show) {
+    const sp = document.getElementById('loadingSpinner');
+    if (sp) sp.classList.toggle('d-none', !show);
+  }
+
+  function showAlert(msg, type = 'info') {
+    const c = document.getElementById('alertContainer');
+    c.textContent = msg;
+    c.className = `alert alert-${type} text-center py-2`;
+    c.classList.remove('d-none');
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      c.classList.add('d-none');
+    }, 3000);
+  }
+
+  function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);}};
+
+  function updateSortIcons() {
+    document.querySelectorAll('.sortable').forEach(th => {
+      const icon = th.querySelector('i');
+      // Reset to default icon
+      icon.className = 'fa fa-sort';
+      if (th.dataset.field === currentSortField) {
+        // Active sort field: show up/down arrow
+        icon.classList.toggle('fa-sort-up', currentSortDir === 'asc');
+        icon.classList.toggle('fa-sort-down', currentSortDir === 'desc');
+      }
+    });
+  }
+
+
+
+  // Inline toggle for Enabled status
+  document.getElementById('userTableBody').addEventListener('change', async (e) => {
+    if (!e.target.classList.contains('toggle-enabled')) return;
+    const checkbox = e.target;
+    const id = checkbox.dataset.id;
+    const newStatus = checkbox.checked;
+    try {
+      const u = users.find(u => u.id === id);
+      const res = await apiRequest(u._links.update.href, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: newStatus })
+      });
+      if (!res || res.status !== 200) {
+        const detail = res?.data?.detail || 'Failed to update status.';
+        showAlert(detail, 'danger');
+      }
+      // Update local copy so detail modal reflects new status
+      const updatedUser = users.find(u => u.id === id);
+      if (updatedUser) {
+        updatedUser.enabled = newStatus;
+      }
+      showAlert('Status updated successfully.', 'success');
+    } catch (err) {
+      showAlert(err.message || 'Network error.', 'danger');
+      // revert toggle on error
+      checkbox.checked = !newStatus;
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

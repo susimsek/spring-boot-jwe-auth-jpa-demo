@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Create User', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/admin/user-management}" class="text-decoration-none">
+          <i class="fa fa-users me-1" aria-hidden="true"></i> User Management
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-plus me-1" aria-hidden="true"></i> Create User
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Create New User</h5>
+        </div>
+        <div class="card-body">
+
+          <form id="adminCreateForm" class="needs-validation" novalidate>
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text"
+                     id="username"
+                     name="username"
+                     class="form-control"
+                     placeholder="Enter username"
+                     required
+                     minlength="3"
+                     maxlength="50"
+                     pattern="^[a-zA-Z0-9_\-]+$"
+                     data-pattern-msg="Only letters, numbers, underscores or hyphens allowed." />
+              <div class="invalid-feedback" id="usernameFeedback"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email"
+                     id="email"
+                     name="email"
+                     class="form-control"
+                     placeholder="Enter email"
+                     required />
+              <div class="invalid-feedback" id="emailFeedback"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group mb-1">
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Enter password"
+                       required
+                       minlength="8"
+                       maxlength="64"
+                       pattern="(?=.*[A-ZÇĞİÖŞÜ])(?=.*[a-zçğıöşü])(?=.*\d).+"
+                       data-pattern-msg="Must contain uppercase, lowercase and a digit." />
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="togglePassword"
+                        tabindex="-1"
+                        title="Show/Hide Password">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="passwordFeedback"></div>
+              <small class="form-text text-muted mb-1">Password strength:</small>
+              <div class="progress mb-3">
+                <div id="passwordStrengthBar"
+                     class="progress-bar"
+                     role="progressbar"
+                     style="width: 0%;"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <div class="input-group mb-1">
+                <input type="password"
+                       id="confirmPassword"
+                       name="confirmPassword"
+                       class="form-control"
+                       placeholder="Re-enter password"
+                       required />
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="toggleConfirmPassword"
+                        tabindex="-1"
+                        title="Show/Hide Password">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" id="confirmPasswordFeedback"></div>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text"
+                     id="firstName"
+                     name="firstName"
+                     class="form-control"
+                     placeholder="Enter first name"
+                     required
+                     minlength="2"
+                     maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed." />
+              <div class="invalid-feedback" id="firstNameFeedback"></div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text"
+                     id="lastName"
+                     name="lastName"
+                     class="form-control"
+                     placeholder="Enter last name"
+                     required
+                     minlength="2"
+                     maxlength="50"
+                     pattern="^[A-Za-zÇÖÜĞİŞçöüğiş]+(?:[ \-][A-Za-zÇÖÜĞİŞçöüğiş]+)*$"
+                     data-pattern-msg="Only letters, single spaces or hyphens allowed." />
+              <div class="invalid-feedback" id="lastNameFeedback"></div>
+            </div>
+
+            <!-- Authorities -->
+            <div class="mb-3">
+              <label for="authorities" class="form-label">Authorities</label>
+              <select id="authorities"
+                      name="authorities"
+                      class="form-select"
+                      multiple
+                      required>
+                <!-- JS will populate -->
+              </select>
+              <div class="invalid-feedback" id="authoritiesFeedback">Select at least one authority.</div>
+            </div>
+
+            <!-- Enabled Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="enabled"
+                     name="enabled"
+                     checked />
+              <label class="form-check-label" for="enabled">Enabled</label>
+            </div>
+
+            <!-- MFA Enabled Switch -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="mfaEnabled"
+                     name="mfaEnabled" />
+              <label class="form-check-label" for="mfaEnabled">MFA Enabled</label>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="protected"
+                     name="protected" />
+              <label class="form-check-label" for="protected">Protected (cannot be deleted)</label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="createBtn">
+                Create User
+                <span id="spinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Global Error -->
+            <div id="formError"
+                 class="alert alert-danger text-center py-2 d-none"></div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { validateField, apiRequest, updateStrengthBar } from '/js/app.js';
+
+  const confirmPasswordEl = document.getElementById('confirmPassword');
+
+  const form        = document.getElementById('adminCreateForm');
+  const createBtn   = document.getElementById('createBtn');
+  const spinner     = document.getElementById('spinner');
+  const errorDiv    = document.getElementById('formError');
+  const select      = document.getElementById('authorities');
+  const pwdInput    = document.getElementById('password');
+  const strengthBar = document.getElementById('passwordStrengthBar');
+  const protEl      = document.getElementById('protected');
+
+  // all inputs + select
+  const inputs = [
+    'username','email','password','confirmPassword',
+    'firstName','lastName','authorities'
+  ].map(id => document.getElementById(id));
+
+  // load authorities
+  async function loadAuthorities() {
+    try {
+      const res = await apiRequest('/api/admin/authorities');
+      if (res?.status === 200 && Array.isArray(res.data)) {
+        res.data.forEach(({ name, description }) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.text  = name;
+          if (description) opt.title = description;
+          // Select ROLE_USER by default
+          if (name === 'ROLE_USER') {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error('Failed to load authorities', e);
+    }
+  }
+
+  // validation
+  inputs.forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      createBtn.disabled = !form.checkValidity();
+      errorDiv.classList.add('d-none');
+    });
+  });
+
+  // password strength
+  pwdInput.addEventListener('input', () => {
+    updateStrengthBar(pwdInput.value, strengthBar);
+  });
+
+  // toggle confirm visibility
+  document.getElementById('toggleConfirmPassword')
+    .addEventListener('click', () => {
+      const icon = document.querySelector('#toggleConfirmPassword i');
+      confirmPasswordEl.type = confirmPasswordEl.type === 'password' ? 'text' : 'password';
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+
+  // confirm-password match validation
+  function validateMatch() {
+    const pwd = pwdInput.value.trim();
+    const conf = confirmPasswordEl.value.trim();
+    if (!conf) {
+      confirmPasswordEl.setCustomValidity('This field is required.');
+      confirmPasswordEl.classList.add('is-invalid');
+      document.getElementById('confirmPasswordFeedback').textContent = 'This field is required.';
+    } else if (pwd !== conf) {
+      confirmPasswordEl.setCustomValidity('Passwords do not match.');
+      confirmPasswordEl.classList.add('is-invalid');
+      document.getElementById('confirmPasswordFeedback').textContent = 'Passwords do not match.';
+    } else {
+      confirmPasswordEl.setCustomValidity('');
+      confirmPasswordEl.classList.remove('is-invalid');
+      document.getElementById('confirmPasswordFeedback').textContent = '';
+    }
+  }
+
+  // wire match & button toggle
+  confirmPasswordEl.addEventListener('input', () => {
+    validateField(confirmPasswordEl);
+    validateMatch();
+    createBtn.disabled = !form.checkValidity();
+    errorDiv.classList.add('d-none');
+  });
+  pwdInput.addEventListener('input', () => {
+    validateMatch();
+    createBtn.disabled = !form.checkValidity();
+  });
+
+  // toggle password visibility
+  document.getElementById('togglePassword')
+    .addEventListener('click', () => {
+      const icon = document.querySelector('#togglePassword i');
+      pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+
+  // submit
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    inputs.forEach(validateField);
+    if (!form.checkValidity()) return;
+    createBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const payload = {
+      username:   form.username.value.trim(),
+      password:   form.password.value,
+      email:      form.email.value.trim(),
+      firstName:  form.firstName.value.trim(),
+      lastName:   form.lastName.value.trim(),
+      enabled:    form.enabled.checked,
+      mfaEnabled: form.mfaEnabled.checked,
+      authorities:Array.from(select.selectedOptions).map(o=>o.value),
+      protected:   protEl.checked
+    };
+
+    try {
+      const res = await apiRequest('/api/admin/users', {
+        method: 'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if (res?.status === 201) {
+        window.location.href = '/admin/user-management';
+
+      } else if (res?.status === 409) {
+        const field  = res.data?.field;
+        const detail = res.data?.detail || 'Conflict occurred.';
+
+        ['username','email'].forEach(id => {
+          const el = document.getElementById(id);
+          el.classList.remove('is-invalid');
+          document.getElementById(id + 'Feedback').textContent = '';
+        });
+
+        if (field === 'username') {
+          document.getElementById('username').classList.add('is-invalid');
+          document.getElementById('usernameFeedback').textContent = detail;
+        } else if (field === 'email') {
+          document.getElementById('email').classList.add('is-invalid');
+          document.getElementById('emailFeedback').textContent = detail;
+        } else {
+          errorDiv.textContent = detail;
+          errorDiv.classList.remove('d-none');
+        }
+
+      } else {
+        const msg = res?.data?.detail || 'Error creating user.';
+        errorDiv.textContent = msg;
+        errorDiv.classList.remove('d-none');
+      }
+    } catch {
+      errorDiv.textContent = 'Network error.';
+      errorDiv.classList.remove('d-none');
+    } finally {
+      spinner.classList.add('d-none');
+      createBtn.disabled = !form.checkValidity();
+    }
+  });
+
+  // init
+  loadAuthorities();
+  createBtn.disabled = true;
+  updateStrengthBar('', strengthBar);
+  /*]]>*/
+</script>
+
+</body>
+</html>

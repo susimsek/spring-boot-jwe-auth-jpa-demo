@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('MFA Management', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/profile}" class="text-decoration-none">
+          <i class="fa fa-user me-1" aria-hidden="true"></i> My Profile
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-lock me-1" aria-hidden="true"></i> MFA Management
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">MFA Management</h5>
+          <p class="small text-muted mb-0">Enable, disable or regenerate your Two-Factor Authentication</p>
+        </div>
+        <div class="card-body" id="mainContent">
+
+          <!-- 1) Başlangıçta gösterilecek yükleme spinner'ı -->
+          <div id="loadingStatus" class="py-4 text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Fetching MFA status…</p>
+          </div>
+
+          <!-- 2) MFA KAPALI ise gösterilecek bölüm -->
+          <div id="disabledSection" class="d-none">
+            <div class="alert alert-warning text-center py-2 mb-3">
+              Two-Factor Authentication is currently <strong>disabled</strong>.
+            </div>
+
+            <form id="enableMfaForm" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="setupPassword" class="form-label">Enter your password to enable MFA</label>
+                <div class="input-group">
+                  <input type="password"
+                         id="setupPassword"
+                         class="form-control"
+                         placeholder="Current password"
+                         required
+                         minlength="8"
+                         maxlength="64" />
+                  <button type="button"
+                          class="btn btn-outline-secondary"
+                          id="toggleSetupPassword"
+                          tabindex="-1"
+                          title="Show/Hide Password">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </div>
+                <div class="invalid-feedback d-block" id="setupPasswordFeedback"></div>
+              </div>
+
+              <div class="d-grid">
+                <button id="enableMfaBtn"
+                        class="btn btn-success"
+                        disabled>
+                  Enable MFA
+                  <span id="enableSpinner"
+                        class="spinner-border spinner-border-sm ms-2 d-none"
+                        role="status"
+                        aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <!-- Hata alerti butonun hemen altında -->
+              <div id="enableError"
+                   class="alert alert-danger text-center py-2 mt-2 mb-0 d-none"></div>
+            </form>
+          </div>
+
+          <div id="pendingSection" class="d-none">
+            <div class="alert alert-warning text-center py-2 mb-3">
+              Two-Factor Authentication is <strong>enabled but not verified</strong>.<br/>
+              Please enter your password to continue setup.
+            </div>
+
+            <form id="pendingMfaForm" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="pendingPassword" class="form-label">Enter your password</label>
+                <div class="input-group">
+                  <input type="password"
+                         id="pendingPassword"
+                         class="form-control"
+                         placeholder="Current password"
+                         required
+                         minlength="8"
+                         maxlength="64" />
+                  <button type="button"
+                          class="btn btn-outline-secondary"
+                          id="togglePendingPassword"
+                          tabindex="-1"
+                          title="Show/Hide Password">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </div>
+                <div class="invalid-feedback d-block" id="pendingPasswordFeedback"></div>
+              </div>
+
+              <div class="d-grid">
+                <button id="pendingMfaBtn"
+                        class="btn btn-primary"
+                        disabled>
+                  Continue MFA Setup
+                  <span id="pendingSpinner"
+                        class="spinner-border spinner-border-sm ms-2 d-none"
+                        role="status"
+                        aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <div id="pendingError"
+                   class="alert alert-danger text-center py-2 mt-2 mb-0 d-none"></div>
+            </form>
+          </div>
+
+          <!-- 3) MFA ETKİNLEŞTİR İŞLEMLERİ tamamlandıktan sonra gösterilecek ONAY bölümü -->
+          <div id="setupSection" class="d-none text-center">
+            <form id="confirmMfaForm" class="needs-validation" novalidate>
+              <!-- QR Kod ve plain secret gösterimi -->
+              <div id="qrContainer" class="my-4"></div>
+              <div id="secretContainer" class="mb-3">
+                <label class="form-label">Your TOTP Secret:</label>
+                <div class="input-group justify-content-center">
+                  <input
+                    type="password"
+                    id="plainSecret"
+                    readonly
+                    class="form-control text-center fw-bold"
+                    style="max-width: 16rem; user-select:none;"
+                    aria-label="TOTP Secret" />
+
+                  <button type="button"
+                          class="btn btn-outline-secondary"
+                          id="toggleSecret"
+                          aria-label="Show or hide secret"
+                          aria-pressed="false">
+                    <i class="fa fa-eye"></i>
+                  </button>
+
+                  <button type="button"
+                          class="btn btn-outline-secondary"
+                          id="copySecretBtn"
+                          aria-label="Copy secret to clipboard">
+                    <i class="fa fa-clipboard"></i>
+                  </button>
+                </div>
+                <div class="form-text">Scan the QR code above or copy the secret into your authenticator app.</div>
+              </div>
+
+              <!-- 6-haneli kod girişi -->
+              <div class="mb-3">
+                <label for="confirmCode" class="form-label">Enter 6-digit code from Authenticator</label>
+                <div class="input-group justify-content-center">
+                  <input type="text"
+                         id="confirmCode"
+                         class="form-control text-center"
+                         style="max-width: 12rem; font-size: 1.25rem;"
+                         maxlength="6"
+                         inputmode="numeric"
+                         pattern="\d{6}"
+                         placeholder="••••••"
+                         required />
+                </div>
+                <div class="invalid-feedback" id="confirmCodeFeedback"></div>
+              </div>
+
+              <div class="d-grid mb-3">
+                <button id="confirmMfaBtn" class="btn btn-primary" disabled>
+                  Confirm MFA Setup
+                  <span id="confirmSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <!-- Hata alerti butonun hemen altında -->
+              <div id="confirmError" class="alert alert-danger text-center py-2 mt-2 mb-0 d-none"></div>
+            </form>
+          </div>
+
+          <!-- 4) MFA AÇIK İSE gösterilecek bölüm (Tabs ile) -->
+          <div id="enabledSection" class="d-none">
+            <div class="alert alert-success text-center py-2 mb-3">
+              Two-Factor Authentication is currently <strong>enabled</strong>.
+            </div>
+
+            <!-- Bootstrap Tabs -->
+            <ul class="nav nav-tabs mb-3" id="mfaTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active"
+                        id="disable-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#disablePane"
+                        type="button"
+                        role="tab"
+                        aria-controls="disablePane"
+                        aria-selected="true">
+                  Disable MFA
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link"
+                        id="regen-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#regenPane"
+                        type="button"
+                        role="tab"
+                        aria-controls="regenPane"
+                        aria-selected="false">
+                  Regenerate MFA
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="mfaTabsContent">
+              <!-- Disable MFA Tab Pane -->
+              <div class="tab-pane fade show active" id="disablePane" role="tabpanel" aria-labelledby="disable-tab">
+                <form id="disableMfaForm" class="needs-validation" novalidate>
+                  <div class="mb-3">
+                    <label for="disablePassword" class="form-label">Enter your password to disable MFA</label>
+                    <div class="input-group">
+                      <input type="password"
+                             id="disablePassword"
+                             class="form-control"
+                             placeholder="Current password"
+                             required
+                             minlength="8"
+                             maxlength="64" />
+                      <button type="button"
+                              class="btn btn-outline-secondary"
+                              id="toggleDisablePassword"
+                              tabindex="-1"
+                              title="Show/Hide Password">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    </div>
+                    <div class="invalid-feedback d-block" id="disablePasswordFeedback"></div>
+                  </div>
+                  <div class="d-grid mb-3">
+                    <button id="disableMfaBtn" class="btn btn-danger" disabled>
+                      Disable MFA
+                      <span id="disableSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                  <div id="disableError" class="alert alert-danger text-center py-2 mt-2 mb-0 d-none"></div>
+                </form>
+              </div>
+
+              <!-- Regenerate MFA Tab Pane -->
+              <div class="tab-pane fade" id="regenPane" role="tabpanel" aria-labelledby="regen-tab">
+                <form id="regenMfaForm" class="needs-validation" novalidate>
+                  <div class="mb-3">
+                    <label for="regenPassword" class="form-label">Enter your password to regenerate MFA</label>
+                    <div class="input-group">
+                      <input type="password"
+                             id="regenPassword"
+                             class="form-control"
+                             placeholder="Current password"
+                             required
+                             minlength="8"
+                             maxlength="64" />
+                      <button type="button"
+                              class="btn btn-outline-secondary"
+                              id="toggleRegenPassword"
+                              tabindex="-1"
+                              title="Show/Hide Password">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    </div>
+                    <div class="invalid-feedback d-block" id="regenPasswordFeedback"></div>
+                  </div>
+                  <div class="d-grid mb-4">
+                    <button id="regenMfaBtn" class="btn btn-warning" disabled>
+                      Regenerate MFA Secret
+                      <span id="regenSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                  <div id="regenError" class="alert alert-danger text-center py-2 mt-2 mb-0 d-none"></div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5) Ortak hata mesajı bölümü (genel hatalar için) -->
+          <div id="errorSection" class="alert alert-danger text-center py-2 mb-0 d-none"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  // Element referansları
+  const loadingStatus         = document.getElementById('loadingStatus');
+  const disabledSection       = document.getElementById('disabledSection');
+  const enabledSection        = document.getElementById('enabledSection');
+  const setupSection          = document.getElementById('setupSection');
+  const errorSection          = document.getElementById('errorSection');
+
+  // --- “MFA Disabled” alanı ---
+  const setupPasswordEl       = document.getElementById('setupPassword');
+  const toggleSetupPwdBtn     = document.getElementById('toggleSetupPassword');
+  const enableMfaBtn          = document.getElementById('enableMfaBtn');
+  const enableSpinner         = document.getElementById('enableSpinner');
+  const enableError           = document.getElementById('enableError');
+  const enableMfaForm         = document.getElementById('enableMfaForm');
+
+  // --- “MFA Setup Confirmation” alanı ---
+  const qrContainer           = document.getElementById('qrContainer');
+  const plainSecretEl         = document.getElementById('plainSecret');
+  const copySecretBtn         = document.getElementById('copySecretBtn');
+  const confirmCodeEl         = document.getElementById('confirmCode');
+  const confirmCodeFeedback   = document.getElementById('confirmCodeFeedback');
+  const confirmMfaBtn         = document.getElementById('confirmMfaBtn');
+  const confirmSpinner        = document.getElementById('confirmSpinner');
+  const confirmError          = document.getElementById('confirmError');
+  const confirmMfaForm        = document.getElementById('confirmMfaForm');
+
+  // --- “MFA Enabled” alanı: Disable MFA ---
+  const disablePasswordEl       = document.getElementById('disablePassword');
+  const toggleDisablePwdBtn     = document.getElementById('toggleDisablePassword');
+  const disableMfaBtn           = document.getElementById('disableMfaBtn');
+  const disableSpinner          = document.getElementById('disableSpinner');
+  const disableError            = document.getElementById('disableError');
+  const disableMfaForm          = document.getElementById('disableMfaForm');
+
+  // --- “MFA Enabled” alanı: Regenerate MFA ---
+  const regenPasswordEl         = document.getElementById('regenPassword');
+  const toggleRegenPwdBtn       = document.getElementById('toggleRegenPassword');
+  const regenMfaBtn             = document.getElementById('regenMfaBtn');
+  const regenSpinner            = document.getElementById('regenSpinner');
+  const regenError              = document.getElementById('regenError');
+  const regenMfaForm            = document.getElementById('regenMfaForm');
+
+  const pendingSection       = document.getElementById('pendingSection');
+  const pendingPasswordEl    = document.getElementById('pendingPassword');
+  const togglePendingBtn     = document.getElementById('togglePendingPassword');
+  const pendingMfaBtn        = document.getElementById('pendingMfaBtn');
+  const pendingSpinner       = document.getElementById('pendingSpinner');
+  const pendingError         = document.getElementById('pendingError');
+  const pendingForm          = document.getElementById('pendingMfaForm');
+
+  const toggleSecret    = document.getElementById('toggleSecret');
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchMfaStatus();
+    setupEventListeners();
+  });
+
+  async function fetchMfaStatus() {
+    try {
+      // apiRequest artık { status, data } döndürüyor
+      const result = await apiRequest('/api/account/mfa/status', { method: 'GET' });
+
+      // Eğer yönlendirme olduysa veya undefined geldiyse buradan çık
+      if (!result) {
+        loadingStatus.classList.add('d-none');
+        return;
+      }
+      const { status, data } = result;
+      // HATEOAS links
+      const links = data._links || {};
+      // store for later use
+      window.mfaLinks = links;
+      loadingStatus.classList.add('d-none');
+
+      if (status !== 200) {
+        let msg = 'Unable to load MFA status. Please try again later.';
+        if (data && data.detail) {
+          msg = data.detail;
+        }
+        showError(msg);
+        return;
+      }
+
+      const mfaEnabled  = data.mfaEnabled;
+      const mfaVerified = data.mfaVerified;
+
+      if (!mfaEnabled) {
+        disabledSection.classList.remove('d-none');
+      } else if (mfaEnabled && !mfaVerified) {
+        pendingSection.classList.remove('d-none');
+      } else {
+        enabledSection.classList.remove('d-none');
+      }
+    } catch (err) {
+      loadingStatus.classList.add('d-none');
+      showError('Unable to load MFA status. Please try again later.');
+    }
+  }
+
+  function setupEventListeners() {
+    // >>> “Enable MFA” bölümü <<<
+
+    setupPasswordEl.addEventListener('input', () => {
+      validateField(setupPasswordEl);
+      enableMfaBtn.disabled = !setupPasswordEl.checkValidity();
+      enableError.classList.add('d-none');
+    });
+
+    toggleSetupPwdBtn.addEventListener('click', () => {
+      const type = setupPasswordEl.type === 'password' ? 'text' : 'password';
+      setupPasswordEl.type = type;
+      toggleIcon(toggleSetupPwdBtn);
+    });
+
+    enableMfaForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!enableMfaForm.checkValidity()) {
+        validateField(setupPasswordEl);
+        return;
+      }
+
+      const pwd = setupPasswordEl.value.trim();
+      enableMfaBtn.disabled = true;
+      enableSpinner.classList.remove('d-none');
+
+      try {
+        const result = await apiRequest(window.mfaLinks.setup.href, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd })
+        });
+
+        if (!result) {
+          enableSpinner.classList.add('d-none');
+          return;
+        }
+        const { status, data } = result;
+
+        if (status !== 200) {
+          const detail = data?.detail || 'Could not initiate MFA setup.';
+          enableError.classList.remove('d-none');
+          enableError.textContent = detail;
+          enableMfaBtn.disabled = false;
+          enableSpinner.classList.add('d-none');
+          return;
+        }
+
+        // Başarılı → data: { plainSecret, qrCodeUrl }
+        showSetupConfirmation(data.plainSecret, data.qrCodeUrl);
+
+        setupPasswordEl.value = '';
+        enableMfaBtn.disabled = true;
+      } catch {
+        const msg = 'Network error. Please try again.';
+        enableError.classList.remove('d-none');
+        enableError.textContent = msg;
+        enableMfaBtn.disabled = false;
+      } finally {
+        enableSpinner.classList.add('d-none');
+      }
+    });
+
+    // >>> “Confirm MFA Setup” bölümü <<<
+
+    confirmCodeEl.addEventListener('keypress', e => {
+      if (!/[0-9]/.test(e.key)) e.preventDefault();
+    });
+
+    confirmCodeEl.addEventListener('input', () => {
+      confirmCodeFeedback.textContent = '';
+      confirmMfaBtn.disabled = !/^\d{6}$/.test(confirmCodeEl.value.trim());
+      confirmError.classList.add('d-none');
+      hideError();
+    });
+
+    confirmMfaForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!confirmMfaForm.checkValidity()) {
+        validateField(confirmCodeEl);
+        return;
+      }
+
+      const code = confirmCodeEl.value.trim();
+      confirmMfaBtn.disabled = true;
+      confirmSpinner.classList.remove('d-none');
+
+      try {
+        const result = await apiRequest(window.mfaLinks.confirm.href, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            flow: 'MANAGEMENT'
+          })
+        });
+
+        if (!result) {
+          confirmSpinner.classList.add('d-none');
+          return;
+        }
+        const { status, data } = result;
+
+        if (status !== 200) {
+          const detail = data?.detail || 'Unable to confirm MFA.';
+          confirmError.classList.remove('d-none');
+          confirmError.textContent = detail;
+          confirmMfaBtn.disabled = false;
+          confirmSpinner.classList.add('d-none');
+          return;
+        }
+
+        setupSection.classList.add('d-none');
+        enabledSection.classList.remove('d-none');
+      } catch {
+        showError('Network error. Please try again.');
+        confirmMfaBtn.disabled = false;
+      } finally {
+        confirmSpinner.classList.add('d-none');
+      }
+    });
+
+    toggleSecret.addEventListener('click', () => {
+      const isRevealed = plainSecretEl.type === 'text';
+      plainSecretEl.type = isRevealed ? 'password' : 'text';
+      toggleSecret.setAttribute('aria-pressed', String(!isRevealed));
+      toggleSecret.querySelector('i').classList.toggle('fa-eye-slash', !isRevealed);
+      toggleSecret.querySelector('i').classList.toggle('fa-eye', isRevealed);
+
+      clearTimeout(revealTimeout);
+      if (!isRevealed) {
+        revealTimeout = setTimeout(() => {
+          plainSecretEl.type = 'password';
+          toggleSecret.setAttribute('aria-pressed','false');
+          toggleSecret.querySelector('i').classList.replace('fa-eye-slash','fa-eye');
+        }, 30000);
+      }
+    });
+
+    copySecretBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(plainSecretEl.value)
+        .then(() => {
+          copySecretBtn.querySelector('i').classList.replace('fa-clipboard','fa-check');
+          setTimeout(() => copySecretBtn.querySelector('i').classList.replace('fa-check','fa-clipboard'), 1500);
+        });
+    });
+
+    // >>> “Disable MFA” bölümü <<<
+
+    disablePasswordEl.addEventListener('input', () => {
+      validateField(disablePasswordEl);
+      disableMfaBtn.disabled = !disablePasswordEl.checkValidity();
+      disableError.classList.add('d-none');
+      hideError();
+    });
+
+    pendingPasswordEl.addEventListener('input', () => {
+      validateField(pendingPasswordEl);
+      pendingMfaBtn.disabled = !pendingPasswordEl.checkValidity();
+      pendingError.classList.add('d-none');
+      hideError();
+    });
+
+    toggleDisablePwdBtn.addEventListener('click', () => {
+      disablePasswordEl.type = disablePasswordEl.type === 'password' ? 'text' : 'password';
+      toggleIcon(toggleDisablePwdBtn);
+    });
+
+    togglePendingBtn.addEventListener('click', () => {
+      pendingPasswordEl.type = pendingPasswordEl.type === 'password' ? 'text' : 'password';
+      toggleIcon(togglePendingBtn);
+    });
+
+    pendingForm.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      if (!pendingForm.checkValidity()) {
+        validateField(pendingPasswordEl);
+        return;
+      }
+
+      const pwd = pendingPasswordEl.value.trim();
+      pendingMfaBtn.disabled = true;
+      pendingSpinner.classList.remove('d-none');
+
+      try {
+        const res = await apiRequest(window.mfaLinks.setup.href, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd })
+        });
+        if (!res) return;
+        const { status, data } = res;
+
+        if (status === 200) {
+          pendingSection.classList.add('d-none');
+          showSetupConfirmation(data.plainSecret, data.qrCodeUrl);
+        } else {
+          pendingError.textContent = data?.detail || 'Could not continue setup.';
+          pendingError.classList.remove('d-none');
+          pendingMfaBtn.disabled = false;
+        }
+      } catch {
+        pendingError.textContent = 'Network error. Please try again.';
+        pendingError.classList.remove('d-none');
+        pendingMfaBtn.disabled = false;
+      } finally {
+        pendingSpinner.classList.add('d-none');
+        pendingPasswordEl.value = '';
+      }
+    });
+
+    disableMfaForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!disableMfaForm.checkValidity()) {
+        validateField(disablePasswordEl);
+        return;
+      }
+
+      const pwd = disablePasswordEl.value.trim();
+      disableMfaBtn.disabled = true;
+      disableSpinner.classList.remove('d-none');
+
+      try {
+        const result = await apiRequest(window.mfaLinks.disable.href, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd })
+        });
+
+        if (!result) {
+          disableSpinner.classList.add('d-none');
+          return;
+        }
+        const { status, data } = result;
+
+        if (status !== 204) {
+          const detail = data?.detail || 'Unable to disable MFA.';
+          disableError.classList.remove('d-none');
+          disableError.textContent = detail;
+          disableMfaBtn.disabled = false;
+          disableSpinner.classList.add('d-none');
+          return;
+        }
+
+        // Başarılı → password alanını temizle, butonu disable et
+        disablePasswordEl.value = '';
+        disableMfaBtn.disabled = true;
+
+        enabledSection.classList.add('d-none');
+        disabledSection.classList.remove('d-none');
+      } catch {
+        showError('Network error. Please try again.');
+        disableMfaBtn.disabled = false;
+      } finally {
+        disableSpinner.classList.add('d-none');
+      }
+    });
+
+    // >>> “Regenerate MFA” bölümü <<<
+
+    regenPasswordEl.addEventListener('input', () => {
+      validateField(regenPasswordEl);
+      regenMfaBtn.disabled = !regenPasswordEl.checkValidity();
+      regenError.classList.add('d-none');
+      hideError();
+    });
+
+    toggleRegenPwdBtn.addEventListener('click', () => {
+      const type = regenPasswordEl.type === 'password' ? 'text' : 'password';
+      regenPasswordEl.type = type;
+      toggleIcon(toggleRegenPwdBtn);
+    });
+
+    regenMfaForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!regenMfaForm.checkValidity()) {
+        validateField(regenPasswordEl);
+        return;
+      }
+
+      const pwd = regenPasswordEl.value.trim();
+      regenMfaBtn.disabled = true;
+      regenSpinner.classList.remove('d-none');
+
+      try {
+        const result = await apiRequest(window.mfaLinks.regenerate.href, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd })
+        });
+
+        if (!result) {
+          regenSpinner.classList.add('d-none');
+          return;
+        }
+        const { status, data } = result;
+
+        if (status !== 200) {
+          const detail = data?.detail || 'Unable to regenerate MFA.';
+          regenError.classList.remove('d-none');
+          regenError.textContent = detail;
+          regenMfaBtn.disabled = false;
+          regenSpinner.classList.add('d-none');
+          return;
+        }
+
+        const { plainSecret, qrCodeUrl } = data;
+        regenPasswordEl.value = '';
+        regenMfaBtn.disabled = true;
+
+        enabledSection.classList.add('d-none');
+        setupSection.classList.remove('d-none');
+        showSetupConfirmation(plainSecret, qrCodeUrl);
+      } catch {
+        showError('Network error. Please try again.');
+        regenMfaBtn.disabled = false;
+      } finally {
+        regenSpinner.classList.add('d-none');
+      }
+    });
+  }
+
+  // Yeni setup (QR + secret) bilgilerini göster
+  function showSetupConfirmation(secret, qrUrl) {
+    disabledSection.classList.add('d-none');
+    enabledSection.classList.add('d-none');
+    setupSection.classList.remove('d-none');
+
+    const img = document.createElement('img');
+    img.src = qrUrl;
+    img.alt = 'QR code for authenticator app';
+    img.classList.add('img-fluid');
+    img.style.maxWidth = '12rem';
+
+    qrContainer.innerHTML = '';
+    qrContainer.appendChild(img);
+
+    plainSecretEl.value = secret;
+    confirmCodeEl.value = '';
+    confirmCodeFeedback.textContent = '';
+    confirmMfaBtn.disabled = true;
+  }
+
+  function showError(msg) {
+    errorSection.textContent = msg;
+    errorSection.classList.remove('d-none');
+  }
+  function hideError() {
+    errorSection.classList.add('d-none');
+    errorSection.textContent = '';
+  }
+
+  function toggleIcon(button) {
+    const icon = button.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+  }
+  /*]]>*/
+</script>
+</body>
+</html>

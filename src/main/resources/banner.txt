@@ -1,0 +1,10 @@
+${AnsiColor.GREEN}███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗
+${AnsiColor.GREEN}██╔════╝██╔══██╗██╔══██╗██║████╗  ██║██╔════╝
+${AnsiColor.GREEN}███████╗██████╔╝██████╔╝██║██╔██╗ ██║██║  ███╗
+${AnsiColor.GREEN}╚════██║██╔═══╝ ██╔══██╗██║██║╚██╗██║██║   ██║
+${AnsiColor.GREEN}███████║██║     ██║  ██║██║██║ ╚████║╚██████╔╝
+${AnsiColor.GREEN}╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+
+${AnsiColor.BRIGHT_BLUE}Startup profile(s) ${spring.profiles.active}
+Running Spring Boot ${spring-boot.version}${AnsiColor.DEFAULT}
+

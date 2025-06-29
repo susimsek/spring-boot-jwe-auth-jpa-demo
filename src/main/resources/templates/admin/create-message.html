@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Create Message', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a th:href="@{/admin/message-management}" class="text-decoration-none">
+          <i class="fa fa-comments me-1" aria-hidden="true"></i> Message Management
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-plus me-1" aria-hidden="true"></i> Create Message
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Create New Message</h5>
+        </div>
+        <div class="card-body">
+
+          <form id="messageCreateForm" class="needs-validation" novalidate>
+            <!-- Locale -->
+            <div class="mb-3">
+              <label for="locale" class="form-label">Locale</label>
+              <select id="locale"
+                      name="locale"
+                      class="form-select"
+                      required>
+                <option value="en">English</option>
+              </select>
+              <div class="invalid-feedback" id="localeFeedback"></div>
+            </div>
+
+            <!-- Code -->
+            <div class="mb-3">
+              <label for="code" class="form-label">Message Code</label>
+              <input type="text"
+                     id="code"
+                     name="code"
+                     class="form-control"
+                     placeholder="Enter message code"
+                     required
+                     minlength="3" maxlength="100"
+                     data-pattern-msg="Code must be between 3 and 100 characters." />
+              <div class="invalid-feedback" id="codeFeedback"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea id="content"
+                        name="content"
+                        class="form-control"
+                        placeholder="Enter message content"
+                        rows="3"
+                        required
+                        maxlength="500"></textarea>
+              <div class="invalid-feedback" id="contentFeedback"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-2">
+              <button type="submit"
+                      class="btn btn-primary"
+                      id="createBtn">
+                Create Message
+                <span id="spinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Global Error -->
+            <div id="formError"
+                 class="alert alert-danger text-center py-2 d-none"></div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { validateField, apiRequest } from '/js/app.js';
+
+  const form      = document.getElementById('messageCreateForm');
+  const createBtn = document.getElementById('createBtn');
+  const spinner   = document.getElementById('spinner');
+  const errorDiv  = document.getElementById('formError');
+
+  const localeEl  = document.getElementById('locale');
+  const codeEl    = document.getElementById('code');
+  const contentEl = document.getElementById('content');
+
+  [localeEl, codeEl, contentEl].forEach(el => {
+    el.addEventListener('input', () => {
+      validateField(el);
+      createBtn.disabled = !form.checkValidity();
+      errorDiv.classList.add('d-none');
+    });
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    [localeEl, codeEl, contentEl].forEach(validateField);
+    if (!form.checkValidity()) return;
+
+    createBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const payload = {
+      locale:  localeEl.value.trim(),
+      code:    codeEl.value.trim(),
+      content: contentEl.value.trim()
+    };
+
+    try {
+      const res = await apiRequest('/api/admin/messages', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if (res?.status === 201) {
+        window.location.href = '/admin/message-management';
+      } else if (res?.status === 409) {
+        const field = res.data?.field;
+        const detail = res.data?.detail || 'Conflict occurred.';
+        if (field === 'code' || field === 'locale') {
+          const el = document.getElementById(field);
+          el.classList.add('is-invalid');
+          document.getElementById(field + 'Feedback').textContent = detail;
+        } else {
+          errorDiv.textContent = detail;
+          errorDiv.classList.remove('d-none');
+        }
+      } else {
+        const msg = res?.data?.detail || 'Error creating message.';
+        errorDiv.textContent = msg;
+        errorDiv.classList.remove('d-none');
+      }
+    } catch {
+      errorDiv.textContent = 'Network error.';
+      errorDiv.classList.remove('d-none');
+    } finally {
+      spinner.classList.add('d-none');
+      createBtn.disabled = !form.checkValidity();
+    }
+  });
+
+  createBtn.disabled = true;
+  /*]]>*/
+</script>
+
+</body>
+</html>

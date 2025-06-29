@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Home', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item active">
+        <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Home</h5>
+        </div>
+        <div class="card-body text-center">
+          <!-- Spinner göstermek/gizlemek için bir div -->
+          <div id="loadingSpinner" class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p id="greeting" class="text-center" style="display: none;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+
+  async function loadGreeting() {
+    const greetingEl = document.getElementById('greeting');
+    const spinnerEl  = document.getElementById('loadingSpinner');
+
+    // Spinner'ı göster, metni gizle
+    spinnerEl.style.display = 'inline-block';
+    greetingEl.style.display = 'none';
+
+    try {
+      // 2) Yeni apiRequest, artık { status, data } döndüğü için
+      const result = await apiRequest('/api/hello', {
+        method: 'GET',
+        headers: { 'Accept': 'text/plain' }
+      });
+      // Eğer result undefined geldiyse (örneğin redirect vs.), hiçbir şey yapmıyoruz
+      if (!result) {
+        greetingEl.textContent = 'No response.';
+      }
+      else if (result.status === 200) {
+        greetingEl.textContent = result.data;
+      } else {
+        // 4xx/5xx gibi hatalarda
+        greetingEl.textContent = `Failed to load greeting. (Status: ${result.status})`;
+      }
+    } catch (err) {
+      // Ağ hatası vb.
+      console.error('loadGreeting error:', err);
+      greetingEl.textContent = 'Failed to load greeting.';
+    } finally {
+      // 4) Spinner'ı gizle, metni göster
+      spinnerEl.style.display = 'none';
+      greetingEl.style.display = 'block';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadGreeting);
+  /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!-- src/main/resources/templates/fragments/layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(pageTitle, bodyFragment)"
+      lang="en"
+      data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${pageTitle}">Default Title</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap & Font-Awesome -->
+  <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+  <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/webjars/font-awesome/css/all.min.css}" rel="stylesheet" />
+
+  <!-- Live reload (optional) -->
+  <script src="http://localhost:35729/livereload.js"></script>
+
+  <!-- Global font-family -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body class="bg-body text-body">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-0">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img th:src="@{/images/logo.png}" alt="Logo" width="32" height="32" class="me-2" />
+      ExampleApp
+    </a>
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- Theme toggle -->
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center" href="#" id="btnTheme">
+            <i class="fa fa-moon me-1"></i>
+            Dark Mode
+          </a>
+        </li>
+
+        <!-- Administration menu (admin only) -->
+        <li id="nav-admin" class="nav-item dropdown hidden">
+          <a class="nav-link dropdown-toggle d-flex align-items-center"
+             href="#" id="adminDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-cogs me-1"></i>
+            Administration
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+            <li>
+              <a class="dropdown-item" href="/admin/authority-management">
+                <i class="fa fa-shield-alt me-2"></i> Authority Management
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/user-management">
+                <i class="fa fa-users me-2"></i> User Management
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/message-management">
+                <i class="fa fa-comments me-2"></i> Message Management
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/admin/docs">
+                <i class="fa fa-book-open me-2"></i> API Documentation
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Guest links -->
+        <li id="nav-login" class="nav-item hidden">
+          <a class="nav-link d-flex align-items-center" href="/login">
+            <i class="fa fa-sign-in-alt me-1"></i>
+            Login
+          </a>
+        </li>
+        <li id="nav-register" class="nav-item hidden">
+          <a class="nav-link d-flex align-items-center" href="/register">
+            <i class="fa fa-user-plus me-1"></i>
+            Register
+          </a>
+        </li>
+
+        <!-- Authenticated user dropdown -->
+        <li id="nav-user-dropdown" class="nav-item dropdown hidden">
+          <a class="nav-link dropdown-toggle d-flex align-items-center"
+             href="#" id="userDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <img id="navAvatar" src="/images/default-avatar.png"
+                 alt="Avatar" class="rounded-circle me-1"
+                 width="32" height="32" />
+            <span id="navUsername">Username</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="userDropdown">
+
+            <!-- Profile card -->
+            <li class="d-flex align-items-center mb-2">
+              <img id="dropdownAvatar" src="/images/default-avatar.png"
+                   alt="Avatar" class="rounded-circle"
+                   width="48" height="48" />
+              <div class="ms-2">
+                <div id="dropdownUsername" class="fw-bold">Username</div>
+                <small id="dropdownFullName" class="text-muted">Full Name</small>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- Menu items -->
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/profile">
+                <i class="fa fa-user me-2"></i> Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/change-password">
+                <i class="fa fa-key me-2"></i> Change Password
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/change-email">
+                <i class="fa fa-envelope-open-text me-2"></i> Change Email
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="/mfa-management">
+                <i class="fa fa-lock me-2"></i> Two-Factor Authentication
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <button class="dropdown-item d-flex align-items-center" id="logoutBtnDropdown">
+                <i class="fa fa-sign-out-alt me-2"></i> Logout
+              </button>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page content -->
+<div th:replace="${bodyFragment}"></div>
+
+<!-- Shared scripts -->
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" type="module"></script>
+<script th:src="@{/js/app.js}" type="module"></script>
+<script th:inline="javascript" type="module">
+  /*<![CDATA[*/
+  import { apiRequest, validateField, toggleButton, updateStrengthBar, updateProfileDetails } from /*[[ @{/js/app.js} ]]*/ '/js/app.js';
+
+  window.apiRequest        = apiRequest;
+  window.validateField     = validateField;
+  window.toggleButton      = toggleButton;
+  window.updateStrengthBar = updateStrengthBar;
+  window.updateProfileDetails = updateProfileDetails;
+
+  // Toggle visibility based on localStorage.profile
+  function loadProfile() {
+    const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+    const isAuth = Boolean(profile.username);
+    const isAdmin = (profile.authorities || []).includes('ROLE_ADMIN');
+
+    document.getElementById('nav-login').classList.toggle('hidden', isAuth);
+    document.getElementById('nav-register').classList.toggle('hidden', isAuth);
+    document.getElementById('nav-user-dropdown').classList.toggle('hidden', !isAuth);
+    document.getElementById('nav-admin').classList.toggle('hidden', !isAdmin);
+
+    if (isAuth) {
+      document.getElementById('navAvatar').src = profile.imageUrl || '/images/default-avatar.png';
+      document.getElementById('navUsername').textContent = profile.username;
+      document.getElementById('dropdownAvatar').src = profile.imageUrl || '/images/default-avatar.png';
+      document.getElementById('dropdownUsername').textContent = profile.username;
+      document.getElementById('dropdownFullName').textContent = `${profile.firstName} ${profile.lastName}`;
+    }
+  }
+
+  // Theme toggler
+  function initTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('btnTheme');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') {
+      html.setAttribute('data-bs-theme', saved);
+    }
+    btn.innerHTML = html.getAttribute('data-bs-theme') === 'dark'
+      ? '<i class="fa fa-sun me-1"></i> Light Mode'
+      : '<i class="fa fa-moon me-1"></i> Dark Mode';
+    btn.addEventListener('click', () => {
+      const next = html.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-bs-theme', next);
+      localStorage.setItem('theme', next);
+      btn.innerHTML = next === 'dark'
+        ? '<i class="fa fa-sun me-1"></i> Light Mode'
+        : '<i class="fa fa-moon me-1"></i> Dark Mode';
+    });
+  }
+
+  // Logout handler
+  function initLogout() {
+    const btn = document.getElementById('logoutBtnDropdown');
+    if (btn) {
+      btn.addEventListener('click', async () => {
+        const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+        const logoutUrl = profile._links.logout.href;
+        await apiRequest(logoutUrl, { method: 'POST' });
+        localStorage.removeItem('profile');
+        window.location.href = '/login?logout';
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadProfile();
+    initTheme();
+    initLogout();
+  });
+  /*]]>*/
+</script>
+</body>
+</html>

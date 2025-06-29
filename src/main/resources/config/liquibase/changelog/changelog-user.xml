@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+      http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+  <changeSet id="20250510-1" author="susimsek">
+    <createTable tableName="user_identity">
+      <column name="id" type="varchar(36)">
+        <constraints primaryKey="true" primaryKeyName="pk_user_identity" nullable="false"/>
+      </column>
+      <column name="username" type="varchar(50)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="password" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="varchar(100)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="first_name" type="varchar(50)"/>
+      <column name="last_name" type="varchar(50)"/>
+      <column name="image_url" type="varchar(256)"/>
+      <column name="enabled" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="locked" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="failed_attempt" type="int"/>
+      <column name="lock_time" type="datetime"/>
+      <column name="lock_expires_at" type="datetime"/>
+      <column name="protected" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfa_enabled" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfa_verified" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfa_secret" type="varchar(100)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="email_verified" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email_verification_token" type="varchar(64)"/>
+      <column name="email_verification_expires_at" type="datetime"/>
+      <column name="pending_email" type="varchar(100)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="email_change_token" type="varchar(64)"/>
+      <column name="email_change_token_expires_at" type="datetime"/>
+      <column name="password_reset_token" type="varchar(64)"/>
+      <column name="password_reset_expires_at" type="datetime"/>
+      <column name="created_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="varchar(36)"/>
+    </createTable>
+
+    <createIndex indexName="idx_user_identity_username" tableName="user_identity">
+      <column name="username"/>
+    </createIndex>
+    <createIndex indexName="idx_user_identity_email" tableName="user_identity">
+      <column name="email"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="20250510-2" author="susimsek">
+    <createTable tableName="authority">
+      <column name="id" type="varchar(36)">
+        <constraints primaryKey="true" primaryKeyName="pk_authority" nullable="false"/>
+      </column>
+      <column name="name" type="varchar(50)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="description" type="varchar(100)"/>
+      <column name="protected" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="varchar(36)"/>
+    </createTable>
+
+    <createIndex indexName="idx_authority_name" tableName="authority">
+      <column name="name"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="20250510-3" author="susimsek">
+    <createTable tableName="user_authority_mapping">
+      <column name="user_id" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="authority_id" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="varchar(36)"/>
+    </createTable>
+
+    <addPrimaryKey
+      tableName="user_authority_mapping"
+      columnNames="user_id, authority_id"
+      constraintName="pk_user_authority_mapping"/>
+  </changeSet>
+
+  <changeSet id="20250510-4" author="susimsek">
+    <addForeignKeyConstraint
+      baseTableName="user_authority_mapping"
+      baseColumnNames="user_id"
+      constraintName="fk_user_authority_user"
+      referencedTableName="user_identity"
+      referencedColumnNames="id"/>
+  </changeSet>
+
+  <changeSet id="20250510-5" author="susimsek">
+    <addForeignKeyConstraint
+      baseTableName="user_authority_mapping"
+      baseColumnNames="authority_id"
+      constraintName="fk_user_authority_authority"
+      referencedTableName="authority"
+      referencedColumnNames="id"/>
+  </changeSet>
+
+  <changeSet id="20250510-6" author="susimsek">
+    <createTable tableName="user_avatar">
+      <column name="user_id" type="varchar(36)">
+        <constraints primaryKey="true" primaryKeyName="pk_user_avatar" nullable="false"/>
+      </column>
+      <column name="content_type" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="content" type="${blobType}">
+        <constraints nullable="true"/>
+      </column>
+      <column name="content_hash" type="varchar(64)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="varchar(36)"/>
+      <column name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="20250510-7" author="susimsek">
+    <addForeignKeyConstraint
+      baseTableName="user_avatar"
+      baseColumnNames="user_id"
+      constraintName="fk_user_avatar_user"
+      referencedTableName="user_identity"
+      referencedColumnNames="id"/>
+  </changeSet>
+
+  <changeSet id="20250510-8" author="susimsek">
+    <createTable tableName="refresh_token">
+      <column name="jti" type="varchar(36)">
+        <constraints primaryKey="true" primaryKeyName="pk_refresh_token" nullable="false"/>
+      </column>
+      <column name="user_id" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="expires_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="varchar(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="varchar(36)"/>
+    </createTable>
+
+    <!-- Foreign key to user_identity.id -->
+    <addForeignKeyConstraint
+      baseTableName="refresh_token"
+      baseColumnNames="user_id"
+      constraintName="fk_refresh_token_user"
+      referencedTableName="user_identity"
+      referencedColumnNames="id"/>
+
+    <createIndex indexName="idx_refresh_token_user_id" tableName="refresh_token">
+      <column name="user_id"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="20250510-1-data" author="susimsek">
+    <loadData
+      file="config/liquibase/data/user.csv"
+      separator=";"
+      usePreparedStatements="true"
+      tableName="user_identity">
+      <column name="id" type="string"/>
+      <column name="username" type="string"/>
+      <column name="password" type="string"/>
+      <column name="email" type="string"/>
+      <column name="first_name" type="string"/>
+      <column name="last_name" type="string"/>
+      <column name="image_url" type="string"/>
+      <column name="enabled" type="boolean"/>
+      <column name="locked" type="boolean"/>
+      <column name="protected" type="boolean"/>
+      <column name="mfa_enabled" type="boolean"/>
+      <column name="mfa_verified" type="boolean"/>
+      <column name="mfa_secret" type="string"/>
+      <column name="email_verified" type="boolean"/>
+      <column name="email_verification_token" type="string"/>
+      <column name="email_verification_expires_at" type="datetime"/>
+      <column name="pending_email" type="string"/>
+      <column name="email_change_token" type="string"/>
+      <column name="email_change_token_expires_at" type="datetime"/>
+      <column name="password_reset_token" type="string"/>
+      <column name="password_reset_expires_at" type="datetime"/>
+      <column name="created_at" type="datetime"/>
+      <column name="created_by" type="string"/>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="string"/>
+    </loadData>
+  </changeSet>
+
+  <changeSet id="20250510-2-data" author="susimsek">
+    <loadData
+      file="config/liquibase/data/authority.csv"
+      separator=";"
+      tableName="authority">
+      <column name="id" type="string"/>
+      <column name="name" type="string"/>
+      <column name="description" type="string"/>
+      <column name="protected" type="boolean"/>
+      <column name="created_at" type="datetime"/>
+      <column name="created_by" type="string"/>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="string"/>
+    </loadData>
+  </changeSet>
+
+  <changeSet id="20250510-3-data" author="susimsek">
+    <loadData
+      file="config/liquibase/data/user_authority_mapping.csv"
+      separator=";"
+      tableName="user_authority_mapping">
+      <column name="user_id" type="string"/>
+      <column name="authority_id" type="string"/>
+      <column name="created_at" type="datetime"/>
+      <column name="created_by" type="string"/>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="string"/>
+    </loadData>
+  </changeSet>
+
+  <changeSet id="20250510-6-data" author="susimsek">
+    <loadData
+      file="config/liquibase/data/user_avatar.csv"
+      separator=";"
+      tableName="user_avatar"
+      usePreparedStatements="true">
+      <column name="user_id" type="string"/>
+      <column name="content_type" type="string"/>
+      <column name="content" type="blob"/>
+      <column name="content_hash" type="string"/>
+      <column name="created_at" type="datetime"/>
+      <column name="created_by" type="string"/>
+      <column name="updated_at" type="datetime"/>
+      <column name="updated_by" type="string"/>
+      <column name="version" type="numeric"/>
+    </loadData>
+  </changeSet>
+
+</databaseChangeLog>

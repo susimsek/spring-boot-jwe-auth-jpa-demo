@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: example-app
+  profiles:
+    active: '@spring.profiles.active@'
+  main:
+    allow-bean-definition-overriding: true
+  web:
+    locale: en
+  messages:
+    basename: i18n/messages
+  jackson:
+    default-property-inclusion: non_null
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 25
+        serialization-mode: via_dto
+  http:
+    client:
+      connect-timeout: 5s
+      read-timeout: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.jdbc.time_zone: Europe/Istanbul
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_query_cache: true
+      hibernate.generate_statistics: false
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.jdbc.fetch_size: 25
+  liquibase:
+    change-log: classpath:config/liquibase/master.xml
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+  threads:
+    virtual:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operationsSorter: method
+    default-model-expand-depth: 1
+    display-request-duration: true
+    default-model-rendering: schema
+    filter: true
+    show-extensions: true
+    try-it-out-enabled: true
+  show-actuator: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus
+          - caches
+          - liquibase
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState, db, redis
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 1m
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  metrics:
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        all: true
+      percentiles:
+        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+    data:
+      repository:
+        autotime:
+          enabled: true
+    tags:
+      application: ${spring.application.name}
+
+application:
+  mail:
+    from: no-reply@example.com
+    base-url: http://localhost:8080
+  api-docs:
+    title: Spring Boot JWE + TOTP Authentication API
+    description: Demonstrates JWE-based JWT authentication with optional TOTP two-factor security
+    version: 0.0.1

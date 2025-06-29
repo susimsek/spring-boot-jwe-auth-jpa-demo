@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Email Verification', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+<nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
+  <div class="container-fluid">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/" class="text-decoration-none">
+          <i class="fa fa-home me-1" aria-hidden="true"></i> Home
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-envelope-open-text me-1" aria-hidden="true"></i> Email Verification
+      </li>
+    </ol>
+  </div>
+</nav>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 600px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">
+          <h5 class="mb-0">Email Verification</h5>
+        </div>
+        <div class="card-body text-center">
+
+          <!-- Loading Spinner -->
+          <div id="loadingSection" class="py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Verifying your email, please wait...</p>
+          </div>
+
+          <!-- MFA Prompt Section (shown if MFA is enabled) -->
+          <div id="mfaPromptSection" class="d-none py-4">
+            <i class="fa fa-shield-alt fa-3x text-primary mb-3"></i>
+            <p class="lead">Your email is verified. Next, set up Two-Factor Authentication.</p>
+            <button id="mfaContinueBtn" class="btn btn-success mt-2">
+              Continue to TOTP Setup
+            </button>
+          </div>
+
+          <!-- Success Message (no MFA) -->
+          <div id="successSection" class="d-none py-4">
+            <i class="fa fa-check-circle fa-4x text-success mb-3"></i>
+            <p class="lead">Your email has been verified successfully!</p>
+            <p>
+              You can now <a th:href="@{/login}">log in</a> to your account.
+            </p>
+          </div>
+
+          <!-- Error Message -->
+          <div id="errorSection" class="d-none py-4">
+            <i class="fa fa-times-circle fa-4x text-danger mb-3"></i>
+            <div class="alert alert-danger" role="alert" id="errorMessage">
+              Verification failed.
+            </div>
+            <p>
+              If your verification link has expired or is invalid, you can request a new one.
+            </p>
+            <a th:href="@{/register}" class="btn btn-secondary mt-3">
+              Go to Register
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const params         = new URLSearchParams(window.location.search);
+    const token          = params.get('token');
+
+    const loadingSection   = document.getElementById('loadingSection');
+    const mfaPromptSection = document.getElementById('mfaPromptSection');
+    const successSection   = document.getElementById('successSection');
+    const errorSection     = document.getElementById('errorSection');
+    const errorMessageEl   = document.getElementById('errorMessage');
+    const mfaContinueBtn   = document.getElementById('mfaContinueBtn');
+
+    if (!token) {
+      loadingSection.classList.add('d-none');
+      errorSection.classList.remove('d-none');
+      errorMessageEl.textContent = 'Invalid verification link.';
+      return;
+    }
+
+    try {
+      // /api/auth/verify-email?token=... çağrısı
+      const result = await apiRequest(`/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
+        method: 'GET'
+      });
+
+      // Eğer result undefined ise (örn. redirect) buradan çık
+      if (!result) return;
+
+      const { status, data } = result;
+      loadingSection.classList.add('d-none');
+
+      if (status === 200 && data) {
+        if (data.mfaEnabled) {
+          mfaPromptSection.classList.remove('d-none');
+          mfaContinueBtn.addEventListener('click', () => {
+            window.location.href = '/mfa-setup?flow=REGISTRATION';
+          });
+        } else {
+          // MFA etkin değilse normal başarı mesajı göster
+          successSection.classList.remove('d-none');
+        }
+      } else {
+        // Hata durumları
+        let detailMsg = 'Verification failed.';
+        if (data?.detail) {
+          detailMsg = data.detail;
+        }
+        errorSection.classList.remove('d-none');
+        errorMessageEl.textContent = detailMsg;
+      }
+    } catch (err) {
+      loadingSection.classList.add('d-none');
+      errorSection.classList.remove('d-none');
+      errorMessageEl.textContent = 'Could not verify. Please try again later.';
+    }
+  });
+  /*]]>*/
+</script>
+</body>
+</html>

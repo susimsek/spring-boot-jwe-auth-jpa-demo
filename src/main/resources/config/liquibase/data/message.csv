@@ -1,0 +1,114 @@
+id;locale;code;content;created_at;created_by;updated_at;updated_by
+010e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.NotBlank.message};Field cannot be blank.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+110e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.NotNull.message};Field cannot be null.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+210e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.NotEmpty.message};Field cannot be empty.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+310e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Size.message};Field must be between {min} and {max} characters.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+410e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Min.message};Field must be at least {value}.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+510e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Max.message};Field must be at most {value}.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+610e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Pattern.message};Field format is invalid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+710e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Email.message};Email should be valid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+810e1aa7-5ff2-4820-9093-e1ca07bef909;en;{org.hibernate.validator.constraints.UUID.message};Invalid UUID format.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+910e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Name.message};Only letters, single spaces or hyphens allowed.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+a10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Username.message};Only letters, numbers, underscores or hyphens allowed.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+b10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.Password.message};Field must contain at least one uppercase letter, one lowercase letter, and one digit.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+c10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.TotpCode.message};Only six digits are allowed.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+d10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.AuthorityName.message};Must start with 'ROLE_' and contain only uppercase letters and underscores.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+e10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.EnumValue.message};Invalid enum value '{value}'. Allowed values are: {allowedValues}.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+f10e1aa7-5ff2-4820-9093-e1ca07bef909;en;{jakarta.validation.constraints.NotEmptyFile.message};File must not be empty.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+045c4c09-d663-4ed2-afbf-33b803a4cc0a;en;{jakarta.validation.constraints.Image.message};Invalid image file type. Allowed types: {allowedTypes}.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+145c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.not_acceptable.title;Not Acceptable;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+245c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.not_acceptable.detail;Could not produce a response matching any acceptable media types. Supported: {0};2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+345c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.unsupported_media_type.title;Unsupported Media Type;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+445c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.unsupported_media_type.detail;Media type '{0}' is not supported. Supported types: {1};2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+545c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.method_not_allowed.title;Method Not Allowed;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+645c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.method_not_allowed.detail;HTTP method '{0}' is not supported for this endpoint.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+745c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.message_not_readable.title;Message Not Readable;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+845c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.message_not_readable.detail;The request message could not be read. Please check the format and try again.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+945c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.type_mismatch.title;Type Mismatch;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+a45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.type_mismatch.detail;Field '{0}' must be of type {1} but the value '{2}' is not compatible.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+b45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.missing_request_parameter.title;Missing Request Parameter;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+c45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.missing_request_parameter.detail;Required request parameter '{0}' of type {1} is missing.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+d45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.missing_request_part.title;Missing Request Part;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+e45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.missing_request_part.detail;Required request part '{0}' is missing.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+f45c4c09-d663-4ed2-afbf-33b803a4cc0a;en;problem.invalid_token.title;Invalid Token;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+0f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.invalid_token.detail;Invalid token.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+1f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.access_denied.title;Access Denied;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+2f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.access_denied.detail;You do not have permission to access this resource.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+3f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.mfa_setup_required.title;MFA Setup Required;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+4f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.mfa_setup_required.detail;Please set up two-factor authentication to proceed.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+5f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.invalid_otp.title;Invalid OTP;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+6f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.invalid_otp.detail;Invalid authentication code.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+9a8811c1-bffe-4fd0-8443-1ce81d67aeaa;en;problem.account_locked.title;Account Locked;2025-06-24 22:30:00;system;2025-06-24 22:30:00;system
+aa8811c1-bffe-4fd0-8443-1ce81d67aeaa;en;problem.account_locked.detail;Your account has been locked due to multiple failed login attempts. Please try again later.;2025-06-24 22:30:00;system;2025-06-24 22:30:00;system
+7f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.resource_conflict.title;Resource Conflict;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+8f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.resource_conflict.detail;The resource could not be created or updated due to a conflict.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+9f0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.resource_not_found.title;Resource Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+af0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.resource_not_found.detail;The requested resource was not found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+bf0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.invalid_request.title;Invalid Request;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+cf0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.invalid_request.detail;The request parameters are invalid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+df0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.validation_failed.title;Validation Failed;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ef0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.validation_failed.detail;One or more fields are invalid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ff0e3d72-671e-415a-9fac-012a8a9cf6f5;en;problem.constraint_violation.title;Constraint Violation;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+0c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.constraint_violation.detail;One or more constraints were violated.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+1c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.not_found.title;Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+2c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.not_found.detail;The requested resource could not be found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+3c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.invalid_credentials.title;Invalid Credentials;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+4c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.invalid_credentials.detail;The username or password is incorrect.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+5c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.file_too_large.title;File Too Large;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+6c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.file_too_large.detail;Maximum upload size exceeded.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+7c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.rate_limit_exceeded.title;Rate Limit Exceeded;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+8c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.rate_limit_exceeded.detail;You have exceeded the allowed request rate.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+9c860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.server_error.title;Internal Server Error;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ac860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.server_error.detail;An unexpected error occurred. Please try again later.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+bc860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.gateway_timeout.title;Gateway Timeout;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+cc860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.gateway_timeout.detail;Request processing timed out. Please try again later.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+dc860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.user_not_found.title;User Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ec860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.user_not_found.detail;User not found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+fc860604-fdbf-40ff-b9d9-418574d1ed5f;en;problem.invalid_password.title;Invalid Password;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+0bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.invalid_password.detail;Current password is incorrect.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+1bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.invalid_verification_token.title;Invalid Verification Token;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+2bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.invalid_verification_token.detail;Verification token is invalid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+3bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.verification_link_expired.title;Verification Link Expired;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+4bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.verification_link_expired.detail;Verification link has expired. Please request a new one.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+5bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.reset_token_invalid.title;Invalid Reset Token;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+6bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.reset_token_invalid.detail;Reset token is invalid.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+7bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.reset_link_expired.title;Reset Link Expired;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+8bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.reset_link_expired.detail;Reset link has expired. Please request a new one.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+9bc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.invalid_authority.title;Invalid Authority;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+abc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.invalid_authority.detail;Invalid authority.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+bbc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.password_cannot_reuse.title;Password Cannot Be Reused;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+cbc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.password_cannot_reuse.detail;New password must be different from current password.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+dbc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.email_cannot_reuse.title;Email Cannot Be Reused;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ebc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.email_cannot_reuse.detail;New email must be different from the current email.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+fbc504da-fa18-4f8e-920c-77ecfaff3845;en;problem.qrcode_size.invalid_format.title;Invalid QR Code Size Format;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+09abec05-5f14-4455-a188-22b918a1599e;en;problem.qrcode_size.invalid_format.detail;Size must be in format WIDTHxHEIGHT, both positive integers.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+19abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_not_found.title;Authority Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+29abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_not_found.detail;Authority not found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+39abec05-5f14-4455-a188-22b918a1599e;en;problem.image_not_found.title;Image Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+49abec05-5f14-4455-a188-22b918a1599e;en;problem.image_not_found.detail;Image not found for user.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+59abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_name_conflict.title;Authority Name Conflict;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+69abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_name_conflict.detail;Authority name already exists.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+79abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_protected.title;Protected Authority;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+89abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_protected.detail;Cannot delete protected authority.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+99abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_assigned_conflict.title;Authority Assigned Conflict;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+a9abec05-5f14-4455-a188-22b918a1599e;en;problem.authority_assigned_conflict.detail;Cannot delete authority, it is still assigned to users.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+b9abec05-5f14-4455-a188-22b918a1599e;en;problem.username_conflict.title;Username Conflict;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+c9abec05-5f14-4455-a188-22b918a1599e;en;problem.username_conflict.detail;Username is already taken.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+d9abec05-5f14-4455-a188-22b918a1599e;en;problem.email_conflict.title;Email Conflict;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+e9abec05-5f14-4455-a188-22b918a1599e;en;problem.email_conflict.detail;Email is already in use.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+f9abec05-5f14-4455-a188-22b918a1599e;en;problem.no_pending_email_change.title;No Pending Email Change;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+0bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.no_pending_email_change.detail;No pending email change to confirm.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+1bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_not_enabled.title;MFA Not Enabled;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+2bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_not_enabled.detail;MFA not enabled for user.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+3bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_already_verified.title;MFA Already Verified;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+4bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_already_verified.detail;MFA has already been verified for this user.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+5bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_already_disabled.title;MFA Already Disabled;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+6bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.mfa_already_disabled.detail;MFA is already disabled for this user.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+7bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.self_deletion_not_allowed.title;Self Deletion Not Allowed;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+8bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.self_deletion_not_allowed.detail;Users cannot delete their own account.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+9bc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.email_already_verified.title;Email Already Verified;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+abc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_not_found.title;Message Not Found;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+bbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_not_found.detail;Message not found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+cbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_code_conflict.title;Message Code Conflict;2025-05-10 12:30:00;system;2025-05-10 12:00:00;system
+dbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.user_protected.title;Protected User;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ebc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.user_protected.detail;Cannot delete protected user account.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
