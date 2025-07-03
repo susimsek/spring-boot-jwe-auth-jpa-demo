@@ -9,7 +9,7 @@ import io.github.susimsek.springbootjweauthjpademo.domain.User;
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidCredentialsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidOtpException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.AuthorityMapper;
 import io.github.susimsek.springbootjweauthjpademo.mapper.MfaMapper;
 import io.github.susimsek.springbootjweauthjpademo.repository.UserRepository;
@@ -79,14 +79,14 @@ public class MfaService {
                                     ConfirmTotpRequestDTO verifyTotpRequest) {
         User user = userLookupService.findByIdWithAuthoritiesOrThrow(userId);
         if (!user.isMfaEnabled()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MFA_NOT_ENABLED,
                 "mfa",
                 userId
             );
         }
         if (user.isMfaVerified()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MFA_ALREADY_VERIFIED,
                 "mfa",
                 userId
@@ -120,7 +120,7 @@ public class MfaService {
             throw new InvalidCredentialsException(ProblemType.INVALID_PASSWORD);
         }
         if (!user.isMfaEnabled()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MFA_ALREADY_DISABLED,
                 "mfa",
                 userId
@@ -140,7 +140,7 @@ public class MfaService {
             throw new InvalidCredentialsException(ProblemType.INVALID_PASSWORD);
         }
         if (!user.isMfaEnabled()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MFA_NOT_ENABLED,
                 "mfa",
                 userId

@@ -53,6 +53,16 @@
                       role="status"
                       aria-hidden="true"></span>
               </button>
+              <div class="progress mb-3 d-none" id="uploadProgressContainer">
+                <div id="uploadProgressBar"
+                     class="progress-bar"
+                     role="progressbar"
+                     style="width: 0%;"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                  0%
+                </div>
+              </div>
               <div class="d-grid mb-2">
                 <button type="button"
                         id="deleteAvatarBtn"
@@ -359,7 +369,7 @@
   });
 
   // upload on button click
-  uploadBtn.addEventListener('click', async () => {
+  uploadBtn.addEventListener('click', () => {
     avatarFb.textContent = '';
     avatarDeleteError.classList.add('d-none');
     deleteSuccess.classList.add('d-none');
@@ -368,34 +378,50 @@
     const file = avatarFile.files[0];
     const formData = new FormData();
     formData.append('file', file);
-    try {
-      const res = await apiRequest(window.uploadAvatarUrl, {
-        method: 'PUT',
-        body: formData
-      });
-      if (res?.status === 200) {
+     // Show progress bar
+     const progressContainer = document.getElementById('uploadProgressContainer');
+     const progressBar       = document.getElementById('uploadProgressBar');
+     progressContainer.classList.remove('d-none');
+     progressBar.style.width  = '0%';
+     progressBar.textContent  = '0%';
+
+    apiRequest(window.uploadAvatarUrl, {
+      method: 'PUT',
+      body: formData,
+      onUploadProgress: (e) => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          progressBar.style.width = percent + '%';
+          progressBar.textContent = percent + '%';
+        }
+      }
+    })
+    .then(res => {
+      avatarSpin.classList.add('d-none');
+      progressContainer.classList.add('d-none');
+      uploadBtn.disabled = false;
+      if (res.status === 200) {
         const newUrl = res.data.imageUrl;
         avatarSuccess.classList.remove('d-none');
         deleteBtn.classList.remove('d-none');
-        // update global profile if this is the logged‑in user
         const storedProfile = JSON.parse(localStorage.getItem('profile') || '{}');
         if (storedProfile.id === userId) {
-          updateProfileDetails({
-            imageUrl: newUrl
-          });
+          updateProfileDetails({ imageUrl: newUrl });
         }
         setTimeout(() => avatarSuccess.classList.add('d-none'), 3000);
       } else {
-        avatarFb.textContent = res.data?.detail || 'Upload failed.';
+        let detail = res.data?.detail || 'Upload failed.';
+        avatarFb.textContent = detail;
         avatarFile.classList.add('is-invalid');
       }
-    } catch {
+    })
+    .catch(() => {
+      avatarSpin.classList.add('d-none');
+      progressContainer.classList.add('d-none');
       avatarFb.textContent = 'Network error.';
       avatarFile.classList.add('is-invalid');
-    } finally {
-      avatarSpin.classList.add('d-none');
       uploadBtn.disabled = false;
-    }
+    });
   });
 
   // delete flow

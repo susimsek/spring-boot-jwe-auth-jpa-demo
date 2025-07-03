@@ -11,7 +11,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.response.ProfileDTO;
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidCredentialsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidTokenException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ValidationException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.UserMapper;
 import io.github.susimsek.springbootjweauthjpademo.repository.UserRepository;
@@ -82,7 +82,7 @@ public class AccountService {
 
         // 4) Check uniqueness of new email
         if (userRepository.existsByEmail(newEmail)) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_CONFLICT,
                 "email",
                 newEmail
@@ -113,7 +113,7 @@ public class AccountService {
             .orElseThrow(() -> new InvalidTokenException(ProblemType.INVALID_VERIFICATION_TOKEN));
 
         if (user.getPendingEmail() == null) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.NO_PENDING_EMAIL_CHANGE,
                 "email"
             );
@@ -163,7 +163,7 @@ public class AccountService {
         }
 
         if (user.isProtectedFlag()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.USER_PROTECTED,
                 "protected",
                 userId

@@ -7,7 +7,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.request.PartialUpdateMess
 import io.github.susimsek.springbootjweauthjpademo.dto.request.UpdateMessageRequestDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.MessageDTO;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ResourceNotFoundException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.MessageMapper;
 import io.github.susimsek.springbootjweauthjpademo.repository.MessageRepository;
@@ -57,7 +57,7 @@ public class MessageService {
     @Transactional
     public MessageDTO createMessage(CreateMessageRequestDTO req) {
         if (messageRepository.existsByCodeAndLocale(req.code(), req.locale())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MESSAGE_CODE_CONFLICT,
                 "code",
                 req.code()
@@ -79,7 +79,7 @@ public class MessageService {
             ));
         if (!msg.getCode().equals(req.code())
             && messageRepository.existsByCodeAndLocale(req.code(), msg.getLocale())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MESSAGE_CODE_CONFLICT,
                 "code",
                 req.code()
@@ -102,7 +102,7 @@ public class MessageService {
         if (req.code() != null
             && !msg.getCode().equals(req.code())
             && messageRepository.existsByCodeAndLocale(req.code(), msg.getLocale())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.MESSAGE_CODE_CONFLICT,
                 "code",
                 req.code()

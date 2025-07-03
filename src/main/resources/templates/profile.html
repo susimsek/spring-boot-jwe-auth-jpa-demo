@@ -56,6 +56,16 @@
                   Upload
                   <span id="uploadSpinner" class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
                 </button>
+                <div class="progress mb-3 d-none" id="uploadProgressContainer">
+                  <div id="uploadProgressBar"
+                       class="progress-bar"
+                       role="progressbar"
+                       style="width: 0%;"
+                       aria-valuemin="0"
+                       aria-valuemax="100">
+                    0%
+                  </div>
+                </div>
               </div>
               <div class="mb-3">
                 <button type="button"
@@ -385,20 +395,39 @@
     });
 
     // on click: actually upload
-    uploadImageBtn.addEventListener('click', async () => {
+    uploadImageBtn.addEventListener('click', () => {
       imageFeedback.textContent = '';
       uploadImageBtn.disabled = true;
       uploadSpinner.classList.remove('d-none');
-      // Clear any existing delete messages when uploading a new image
       deleteError.classList.add('d-none');
       deleteSuccess.classList.add('d-none');
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('file', file);
-      try {
-        const res = await apiRequest(window._links?.['upload-avatar']?.href, {
-          method: 'PUT', body: formData });
-        if (res?.status === 200) {
+
+      // Show progress bar
+      const progressContainer = document.getElementById('uploadProgressContainer');
+      const progressBar = document.getElementById('uploadProgressBar');
+      progressContainer.classList.remove('d-none');
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+
+      apiRequest(window._links['upload-avatar'].href, {
+        method: 'PUT',
+        body: formData,
+        onUploadProgress: (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+          }
+        }
+      })
+      .then(res => {
+        uploadSpinner.classList.add('d-none');
+        progressContainer.classList.add('d-none');
+        uploadImageBtn.disabled = false;
+        if (res.status === 200) {
           const newUrl = res.data.imageUrl;
           profileImage.src = newUrl;
           toggleDeleteButton(newUrl);
@@ -406,16 +435,18 @@
           setTimeout(() => uploadSuccess.classList.add('d-none'), 3000);
           updateProfileDetails({ imageUrl: newUrl });
         } else {
-          imageFeedback.textContent = res.data?.detail || 'Upload failed.';
+          let detail = res.data?.detail || 'Upload failed.';
+          imageFeedback.textContent = detail;
           imageInput.classList.add('is-invalid');
         }
-      } catch {
+      })
+      .catch(() => {
+        uploadSpinner.classList.add('d-none');
+        progressContainer.classList.add('d-none');
         imageFeedback.textContent = 'Network error.';
         imageInput.classList.add('is-invalid');
-      } finally {
-        uploadSpinner.classList.add('d-none');
         uploadImageBtn.disabled = false;
-      }
+      });
     });
 
     // 4) Delete flow

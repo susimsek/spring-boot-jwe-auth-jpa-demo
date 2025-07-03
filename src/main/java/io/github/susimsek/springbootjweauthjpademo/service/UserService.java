@@ -10,7 +10,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.request.PartialUpdateUser
 import io.github.susimsek.springbootjweauthjpademo.dto.request.UpdateUserRequestDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.UserDTO;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ResourceNotFoundException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ValidationException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.UserMapper;
@@ -60,14 +60,14 @@ public class UserService {
     public UserDTO createUser(CreateUserRequestDTO req) {
         // Check conflicts
         if (userRepository.existsByUsername(req.username())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.USERNAME_CONFLICT,
                 "username",
                 req.username()
             );
         }
         if (userRepository.existsByEmail(req.email())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_CONFLICT,
                 "email",
                 req.email()
@@ -93,7 +93,7 @@ public class UserService {
                 id
             ));
         if (!u.getUsername().equals(req.username()) && userRepository.existsByUsername(req.username())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.USERNAME_CONFLICT,
                 "username",
                 req.username()
@@ -101,7 +101,7 @@ public class UserService {
         }
 
         if (!u.getEmail().equals(req.email()) && userRepository.existsByEmail(req.email())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_CONFLICT,
                 "email",
                 req.email()
@@ -142,7 +142,7 @@ public class UserService {
         // Conflict checks for username and email
         if (req.username() != null && !u.getUsername().equals(req.username())
             && userRepository.existsByUsername(req.username())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.USERNAME_CONFLICT,
                 "username",
                 req.username()
@@ -150,7 +150,7 @@ public class UserService {
         }
         if (req.email() != null && !u.getEmail().equals(req.email())
             && userRepository.existsByEmail(req.email())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_CONFLICT,
                 "email",
                 req.email()

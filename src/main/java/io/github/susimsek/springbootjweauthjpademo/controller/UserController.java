@@ -6,7 +6,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.request.PartialUpdateUser
 import io.github.susimsek.springbootjweauthjpademo.dto.request.UpdateUserRequestDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.UserDTO;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -303,7 +303,7 @@ public class UserController {
     ) {
         log.debug("REST request to delete user : {}", userId);
         if (jwt.getSubject().equals(userId)) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.SELF_DELETION_NOT_ALLOWED,
                 "userId",
                 userId

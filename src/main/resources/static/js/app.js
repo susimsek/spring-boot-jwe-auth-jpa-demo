@@ -5,6 +5,83 @@ export const DEFAULT_AVATAR = '/images/default-avatar.png';
  * Sends a fetch request, handles redirects and 401 globally.
  */
 export async function apiRequest(url, opts = {}) {
+  // Centralized response handling (handles 401, 403, 429, 500, 503)
+  async function handleResponse(status, data) {
+    const isAuthEndpoint = url.endsWith('/api/auth/login')
+      || url.endsWith('/api/auth/refresh-token');
+    if (status === 401 && !isAuthEndpoint && !opts._retry) {
+      if (!data || data.error === 'invalid_token') {
+        opts._retry = true;
+        const r = await fetch('/api/auth/refresh-token', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        if (r.ok) {
+          return apiRequest(url, opts);
+        } else {
+          localStorage.removeItem('profile');
+          window.location.href = '/login';
+          return;
+        }
+      }
+      return { status, data };
+    }
+    if (status === 403) {
+      if (!data || data.error === 'access_denied') {
+        window.location.href = '/403';
+        return;
+      }
+      return { status, data };
+    }
+    if (status === 429) {
+      const retryAfter = parseInt(r.headers?.get('Retry-After') ?? '0', 10);
+      data.detail = `Too many requests. Please wait ${retryAfter} seconds before retrying.`;
+      return { status, data };
+    }
+    if (status === 500) {
+      data.detail = "Sorry, something went wrong on our end. Please try again later.";
+      return { status, data };
+    }
+    if (status === 503) {
+      data.detail = "Service is temporarily unavailable. Please wait a few minutes and try again.";
+      return { status, data };
+    }
+    return { status, data };
+  }
+
+  // If onUploadProgress is provided, use XHR to track upload progress
+  if (typeof opts.onUploadProgress === 'function') {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(opts.method || 'GET', url);
+      // set headers
+      Object.entries(opts.headers || {}).forEach(([k, v]) => xhr.setRequestHeader(k, v));
+      xhr.withCredentials = opts.credentials === 'include';
+
+      // upload progress handler
+      xhr.upload.onprogress = opts.onUploadProgress;
+
+      xhr.onload = () => {
+        const status = xhr.status;
+        const contentType = xhr.getResponseHeader('Content-Type') || '';
+        let data;
+        try {
+          if (contentType.includes('application/json') || contentType.includes('application/problem+json')) {
+            data = JSON.parse(xhr.responseText);
+          } else {
+            data = xhr.responseText;
+          }
+        } catch (_) {
+          data = null;
+        }
+        // Delegate to centralized handler
+        handleResponse(status, data).then(resolve).catch(reject);
+      };
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.send(opts.body);
+    });
+  }
+
   // Default headers + include credentials for cookies
   opts.headers = {
     ...(opts.headers || {}),
@@ -37,53 +114,7 @@ export async function apiRequest(url, opts = {}) {
       catch (_) { data = null; }
     }
 
-    const isAuthEndpoint = url.endsWith('/api/auth/login')
-      || url.endsWith('/api/auth/refresh-token');
-    if (res.status === 401 && !isAuthEndpoint && !opts._retry) {
-
-      if (!data || data.error === 'invalid_token') {
-        opts._retry = true;
-
-        const r = await fetch('/api/auth/refresh-token', {
-          method: 'POST',
-          credentials: 'include'
-        });
-
-        if (r.ok) {
-          return apiRequest(url, opts);
-        } else {
-          localStorage.removeItem('profile');
-          window.location.href = '/login';
-          return;
-        }
-      }
-      return { status: res.status, data };
-    }
-
-    // 4) 403 Forbidden: access denied
-    if (res.status === 403) {
-      if (!data || data.error === 'access_denied') {
-        window.location.href = '/403';
-        return;
-      }
-      return { status: res.status, data };
-    }
-
-    if (res.status === 429) {
-      const retryAfter = parseInt(res.headers.get('Retry-After') ?? '0', 10);
-      data.detail = `Too many requests. Please wait ${retryAfter} seconds before retrying.`;
-      return { status: res.status, data };
-    }
-    if (res.status === 500) {
-      data.detail = "Sorry, something went wrong on our end. Please try again later.";
-      return { status: res.status, data };
-    }
-    if (res.status === 503) {
-      data.detail = "Service is temporarily unavailable. Please wait a few minutes and try again.";
-      return { status: res.status, data };
-    }
-
-    return { status: res.status, data };
+    return await handleResponse(res.status, data);
 
   } catch (error) {
     console.error('apiRequest encountered an error:', error);

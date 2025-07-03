@@ -7,7 +7,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.request.PartialUpdateAuth
 import io.github.susimsek.springbootjweauthjpademo.dto.request.UpdateAuthorityRequestDTO;
 import io.github.susimsek.springbootjweauthjpademo.domain.Authority;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ResourceNotFoundException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.AuthorityMapper;
 import io.github.susimsek.springbootjweauthjpademo.repository.AuthorityRepository;
@@ -55,7 +55,7 @@ public class AuthorityService {
     @Transactional
     public AuthorityDTO createAuthority(CreateAuthorityRequestDTO req) {
         if (authorityRepository.existsByName(req.name())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.AUTHORITY_NAME_CONFLICT,
                 "name",
                 req.name()
@@ -76,7 +76,7 @@ public class AuthorityService {
                 id
             ));
         if (!a.getName().equals(req.name()) && authorityRepository.existsByName(req.name())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.AUTHORITY_NAME_CONFLICT,
                 "name",
                 req.name()
@@ -98,7 +98,7 @@ public class AuthorityService {
             ));
         if (req.name() != null && !a.getName().equals(req.name())
             && authorityRepository.existsByName(req.name())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.AUTHORITY_NAME_CONFLICT,
                 "name",
                 req.name()
@@ -119,7 +119,7 @@ public class AuthorityService {
                 id
             ));
         if (a.isProtectedFlag()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.AUTHORITY_PROTECTED,
                 "protected",
                 id
@@ -127,7 +127,7 @@ public class AuthorityService {
         }
         long count = userAuthorityMappingRepository.countByAuthorityId(id);
         if (count > 0) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.AUTHORITY_ASSIGNED_CONFLICT,
                 "protected"
             );

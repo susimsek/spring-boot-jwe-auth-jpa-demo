@@ -19,7 +19,7 @@ import io.github.susimsek.springbootjweauthjpademo.exception.AccountLockedExcept
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidCredentialsException;
 import io.github.susimsek.springbootjweauthjpademo.exception.InvalidTokenException;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemType;
-import io.github.susimsek.springbootjweauthjpademo.exception.ResourceConflictException;
+import io.github.susimsek.springbootjweauthjpademo.exception.ResourceAlreadyExistsException;
 import io.github.susimsek.springbootjweauthjpademo.mapper.AuthorityMapper;
 import io.github.susimsek.springbootjweauthjpademo.mapper.MfaMapper;
 import io.github.susimsek.springbootjweauthjpademo.mapper.UserMapper;
@@ -66,14 +66,14 @@ public class AuthenticationService {
     @Transactional
     public RegistrationDTO register(RegisterRequestDTO req) {
         if (userRepository.existsByUsername(req.username())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.USERNAME_CONFLICT,
                 "username",
                 req.username()
             );
         }
         if (userRepository.existsByEmail(req.email())) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_CONFLICT,
                 "email",
                 req.email()
@@ -173,7 +173,7 @@ public class AuthenticationService {
             );
 
         if (user.isEmailVerified()) {
-            throw new ResourceConflictException(
+            throw new ResourceAlreadyExistsException(
                 ProblemType.EMAIL_ALREADY_VERIFIED,
                 "email",
                 user.getEmail()

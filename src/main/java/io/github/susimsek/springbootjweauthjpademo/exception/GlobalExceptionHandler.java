@@ -268,12 +268,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ResourceConflictException.class)
-    public ResponseEntity<Object> handleResourceConflict(
-        ResourceConflictException ex,
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<Object> handleResourceAlreadyExists(
+        ResourceAlreadyExistsException ex,
         @NonNull WebRequest request
     ) {
-        log.debug("ResourceConflictException: field={}, rejectedValue={}, message={}",
+        log.debug("ResourceAlreadyExistsException: field={}, rejectedValue={}, message={}",
             ex.getField(), ex.getRejectedValue(), ex.getMessage());
         return builder.build(
             ex.getProblemType(),
