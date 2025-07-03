@@ -276,12 +276,31 @@
       return showAlert('Failed to load messages.', 'danger');
     }
     const pageData = res.data.page;
+    const links = res.data._links;
     messages = res.data._embedded?.messages || [];
     currentPage  = pageData.number + 1;
     pageSize     = pageData.size;
     totalItems   = pageData.totalElements;
     renderTable();
-    renderPagination(pageData.totalPages);
+    renderPagination(pageData.totalPages, links);
+    renderInfo();
+  }
+
+  async function loadMessagesByUrl(url) {
+    toggleSpinner(true);
+    const res = await apiRequest(url);
+    toggleSpinner(false);
+    if (!res || res.status !== 200) {
+      return showAlert('Failed to load messages.', 'danger');
+    }
+    const pageData = res.data.page;
+    const links = res.data._links;
+    messages = res.data._embedded?.messages || [];
+    currentPage  = pageData.number + 1;
+    pageSize     = pageData.size;
+    totalItems   = pageData.totalElements;
+    renderTable();
+    renderPagination(pageData.totalPages, links);
     renderInfo();
   }
 
@@ -404,25 +423,33 @@
     });
   });
 
-  function renderPagination(totalPages) {
+  function renderPagination(totalPages, links) {
     const ul = document.getElementById('pagination');
     ul.innerHTML = '';
 
     // First page button
     const firstLi = document.createElement('li');
-    firstLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    firstLi.className = `page-item ${!links.prev?.href ? 'disabled' : ''}`;
     firstLi.innerHTML = `<button class="page-link" aria-label="First"><i class="fa fa-angle-double-left"></i></button>`;
-    firstLi.firstElementChild.onclick = () => { currentPage = 1; loadMessages(); };
+    firstLi.firstElementChild.onclick = () => {
+      if (links.first?.href) {
+        loadMessagesByUrl(links.first.href);
+      }
+    };
     ul.appendChild(firstLi);
 
     // Previous page button
     const prevLi = document.createElement('li');
-    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.className = `page-item ${!links.prev?.href ? 'disabled' : ''}`;
     prevLi.innerHTML = `<button class="page-link" aria-label="Previous"><i class="fa fa-angle-left"></i></button>`;
-    prevLi.firstElementChild.onclick = () => { if (currentPage > 1) { currentPage--; loadMessages(); } };
+    prevLi.firstElementChild.onclick = () => {
+      if (links.prev?.href) {
+        loadMessagesByUrl(links.prev.href);
+      }
+    };
     ul.appendChild(prevLi);
 
-    // Page numbers with ellipses
+    // Page numbers with ellipses (unchanged)
     const siblingCount = 1;
     let hasSkipped = false;
     for (let page = 1; page <= totalPages; page++) {
@@ -446,16 +473,24 @@
 
     // Next page button
     const nextLi = document.createElement('li');
-    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.className = `page-item ${!links.next?.href ? 'disabled' : ''}`;
     nextLi.innerHTML = `<button class="page-link" aria-label="Next"><i class="fa fa-angle-right"></i></button>`;
-    nextLi.firstElementChild.onclick = () => { if (currentPage < totalPages) { currentPage++; loadMessages(); } };
+    nextLi.firstElementChild.onclick = () => {
+      if (links.next?.href) {
+        loadMessagesByUrl(links.next.href);
+      }
+    };
     ul.appendChild(nextLi);
 
     // Last page button
     const lastLi = document.createElement('li');
-    lastLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    lastLi.className = `page-item ${!links.next?.href ? 'disabled' : ''}`;
     lastLi.innerHTML = `<button class="page-link" aria-label="Last"><i class="fa fa-angle-double-right"></i></button>`;
-    lastLi.firstElementChild.onclick = () => { currentPage = totalPages; loadMessages(); };
+    lastLi.firstElementChild.onclick = () => {
+      if (links.last?.href) {
+        loadMessagesByUrl(links.last.href);
+      }
+    };
     ul.appendChild(lastLi);
   }
 

@@ -342,6 +342,7 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
     }
     if (filter) params.push(`search=${encodeURIComponent(filter)}`);
     const res = await apiRequest(`/api/admin/users?${params.join('&')}`);
+    const links = res.data._links;
 
     toggleSpinner(false);
 
@@ -356,7 +357,25 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
     currentPage = pageData.number + 1;
 
     renderTable();
-    renderPagination(pageData.totalPages);
+    renderPagination(pageData.totalPages, links);
+    renderInfo();
+  }
+
+  async function loadUsersByUrl(url) {
+    toggleSpinner(true);
+    const res = await apiRequest(url);
+    toggleSpinner(false);
+    if (!res || res.status !== 200) {
+      return showAlert('Failed to load users.', 'danger');
+    }
+    const pageData = res.data.page;
+    const list = res.data._embedded?.users || [];
+    const links = res.data._links;
+    users = list;
+    totalItems = pageData.totalElements;
+    currentPage = pageData.number + 1;
+    renderTable();
+    renderPagination(pageData.totalPages, links);
     renderInfo();
   }
 
@@ -402,22 +421,30 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
     tbody.querySelectorAll('button').forEach(btn => btn.addEventListener('click', onAction));
   }
 
-  function renderPagination(totalPages) {
+  function renderPagination(totalPages, links) {
     const ul = document.getElementById('pagination');
     ul.innerHTML = '';
 
     // First page button
     const firstLi = document.createElement('li');
-    firstLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    firstLi.className = `page-item ${!links.prev?.href ? 'disabled' : ''}`;
     firstLi.innerHTML = `<button class="page-link" aria-label="First"><i class="fa fa-angle-double-left"></i></button>`;
-    firstLi.firstElementChild.onclick = () => { if (currentPage !== 1) { currentPage = 1; loadUsers(); } };
+    firstLi.firstElementChild.onclick = () => {
+      if (links.first?.href) {
+        loadUsersByUrl(links.first.href);
+      }
+    };
     ul.appendChild(firstLi);
 
     // Previous page button
     const prevLi = document.createElement('li');
-    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.className = `page-item ${!links.prev?.href ? 'disabled' : ''}`;
     prevLi.innerHTML = `<button class="page-link" aria-label="Previous"><i class="fa fa-angle-left"></i></button>`;
-    prevLi.firstElementChild.onclick = () => { if (currentPage > 1) { currentPage--; loadUsers(); } };
+    prevLi.firstElementChild.onclick = () => {
+      if (links.prev?.href) {
+        loadUsersByUrl(links.prev.href);
+      }
+    };
     ul.appendChild(prevLi);
 
     // Page numbers with ellipses
@@ -443,16 +470,24 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
 
     // Next page button
     const nextLi = document.createElement('li');
-    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.className = `page-item ${!links.next?.href ? 'disabled' : ''}`;
     nextLi.innerHTML = `<button class="page-link" aria-label="Next"><i class="fa fa-angle-right"></i></button>`;
-    nextLi.firstElementChild.onclick = () => { if (currentPage < totalPages) { currentPage++; loadUsers(); } };
+    nextLi.firstElementChild.onclick = () => {
+      if (links.next?.href) {
+        loadUsersByUrl(links.next.href);
+      }
+    };
     ul.appendChild(nextLi);
 
     // Last page button
     const lastLi = document.createElement('li');
-    lastLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    lastLi.className = `page-item ${!links.next?.href ? 'disabled' : ''}`;
     lastLi.innerHTML = `<button class="page-link" aria-label="Last"><i class="fa fa-angle-double-right"></i></button>`;
-    lastLi.firstElementChild.onclick = () => { if (currentPage !== totalPages) { currentPage = totalPages; loadUsers(); } };
+    lastLi.firstElementChild.onclick = () => {
+      if (links.last?.href) {
+        loadUsersByUrl(links.last.href);
+      }
+    };
     ul.appendChild(lastLi);
   }
 
