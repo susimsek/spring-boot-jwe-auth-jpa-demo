@@ -43,19 +43,16 @@
             <div>
               <div id="avatarDropZone"
                    class="d-flex flex-column align-items-center justify-content-center mb-3 border border-secondary border-dashed rounded p-3 position-relative">
-                <i class="fa fa-cloud-arrow-up fa-2x mb-2" aria-hidden="true"></i>
-                <p class="mb-1">Drag and drop image here</p>
-                <p class="mb-1">or</p>
-                <label for="avatarFile" class="btn btn-outline-secondary btn-sm">
-                  <i class="fa fa-folder-open me-1" aria-hidden="true"></i>
-                  Browse file
+                <label for="avatarFile" class="d-flex align-items-center justify-content-center text-body-secondary w-100 h-100 mb-0">
+                  <i class="fa fa-cloud-arrow-up fa-lg me-2" aria-hidden="true"></i>
+                  <span>Drop image here or <span class="fw-bold">Browse file</span></span>
+                  <input
+                    type="file"
+                    id="avatarFile"
+                    accept=".png,.jpeg,.jpg,.webp"
+                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                  />
                 </label>
-                <input
-                  type="file"
-                  id="avatarFile"
-                  accept=".png,.jpeg,.jpg,.webp"
-                  class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
-                />
               </div>
               <div class="invalid-feedback d-block text-start" id="avatarFeedback"></div>
               <button class="btn btn-sm btn-primary w-100 mt-2 mb-3"

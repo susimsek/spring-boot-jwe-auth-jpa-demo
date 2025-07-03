@@ -43,20 +43,17 @@
               <div class="mb-3 text-start">
               <div id="imageDropZone"
                      class="d-flex flex-column align-items-center justify-content-center mb-2 border border-secondary border-dashed rounded p-4 position-relative w-100">
-                  <i class="fa fa-cloud-arrow-up fa-2x mb-2" aria-hidden="true"></i>
-                 <p class="mb-1">Drag and drop image here</p>
-                 <p class="mb-1">or</p>
-                  <label for="imageInput" class="btn btn-outline-secondary btn-sm">
-                    <i class="fa fa-folder-open me-1" aria-hidden="true"></i>
-                    Browse file
-                  </label>
+                <label for="imageInput" class="d-flex align-items-center justify-content-center text-body-secondary w-100 h-100 mb-0">
+                  <i class="fa fa-cloud-arrow-up fa-lg me-2" aria-hidden="true"></i>
+                  <span>Drop image here or <span class="fw-bold">Browse file</span></span>
                   <input
                     type="file"
                     id="imageInput"
                     accept=".png,.jpeg,.jpg,.webp"
                     class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
                   />
-                </div>
+                </label>
+              </div>
                 <div class="invalid-feedback text-start" id="imageFeedback"></div>
                 <button type="button"
                         id="uploadImageBtn"
