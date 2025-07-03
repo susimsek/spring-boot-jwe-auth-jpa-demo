@@ -41,13 +41,20 @@
                    class="rounded-circle mb-2"
                    style="width:120px;height:120px;object-fit:cover;">
               <div class="mb-3 text-start">
-                <label for="imageInput" class="form-label">Upload Image</label>
-                <input
-                  type="file"
-                  id="imageInput"
-                  accept=".png,.jpeg,.jpg,.webp"
-                  class="form-control mb-2"
-                />
+              <div id="imageDropZone"
+                     class="d-flex flex-column align-items-center justify-content-center mb-2 border border-secondary border-dashed rounded p-4 position-relative w-100">
+                  <i class="fa fa-cloud-arrow-up fa-2x mb-2" aria-hidden="true"></i>
+                  <p class="mb-1">Drag & drop image here</p>
+                  <label for="imageInput" class="btn btn-outline-secondary btn-sm">
+                    Or click to select
+                  </label>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    accept=".png,.jpeg,.jpg,.webp"
+                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                  />
+                </div>
                 <div class="invalid-feedback text-start" id="imageFeedback"></div>
                 <button type="button"
                         id="uploadImageBtn"
@@ -566,6 +573,30 @@
       } finally {
         deleteAccountSpinner.classList.add('d-none');
         confirmDeleteAccount.disabled = false;
+      }
+    });
+    // Drag & drop support for avatar upload
+    const dropZone = document.getElementById('imageDropZone');
+    ['dragenter', 'dragover'].forEach(evt =>
+      dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.remove('border-secondary');
+        dropZone.classList.add('border', 'border-primary', 'bg-primary', 'bg-opacity-10');
+      })
+    );
+    ['dragleave', 'drop'].forEach(evt =>
+      dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+        dropZone.classList.add('border-secondary');
+      })
+    );
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        imageInput.files = files;
+        imageInput.dispatchEvent(new Event('change'));
       }
     });
   });

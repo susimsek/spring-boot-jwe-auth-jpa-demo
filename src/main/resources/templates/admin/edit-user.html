@@ -41,8 +41,16 @@
                  class="rounded-circle mb-2"
                  style="width:120px;height:120px;object-fit:cover;">
             <div>
-              <input class="form-control form-control-sm w-100 mb-3"
-                     type="file" id="avatarFile" accept=".png,.jpeg,.jpg,.webp">
+              <div id="avatarDropZone"
+                   class="d-flex flex-column align-items-center justify-content-center mb-3 border border-secondary border-dashed rounded p-3 position-relative">
+                <i class="fa fa-cloud-arrow-up fa-2x mb-2" aria-hidden="true"></i>
+                <p class="mb-1">Drag &amp; drop avatar here</p>
+                <label for="avatarFile" class="btn btn-outline-secondary btn-sm mb-2">
+                  Or click to select
+                </label>
+                <input class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                       type="file" id="avatarFile" accept=".png,.jpeg,.jpg,.webp">
+              </div>
               <div class="invalid-feedback d-block text-start" id="avatarFeedback"></div>
               <button class="btn btn-sm btn-primary w-100 mt-2 mb-3"
                       id="uploadAvatarBtn"
@@ -519,6 +527,30 @@
     } finally {
       spinner.classList.add('d-none');
       updateBtn.disabled = !form.checkValidity();
+    }
+  });
+  // Drag & drop support for avatar upload
+  const avatarDropZone = document.getElementById('avatarDropZone');
+  ['dragenter','dragover'].forEach(evt =>
+    avatarDropZone.addEventListener(evt, e => {
+      e.preventDefault();
+      avatarDropZone.classList.remove('border-secondary');
+      avatarDropZone.classList.add('border', 'border-primary', 'bg-primary', 'bg-opacity-10');
+    })
+  );
+  ['dragleave','drop'].forEach(evt =>
+    avatarDropZone.addEventListener(evt, e => {
+      e.preventDefault();
+      avatarDropZone.classList.remove('border-primary','bg-primary','bg-opacity-10');
+      avatarDropZone.classList.add('border-secondary');
+    })
+  );
+  avatarDropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      avatarFile.files = files;
+      avatarFile.dispatchEvent(new Event('change'));
     }
   });
   /*]]>*/
