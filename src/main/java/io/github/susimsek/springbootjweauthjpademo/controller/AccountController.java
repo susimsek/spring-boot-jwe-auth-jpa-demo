@@ -72,28 +72,6 @@ public class AccountController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -143,29 +121,7 @@ public class AccountController {
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
             ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
             @ApiResponse(responseCode = "409", description = "Email already in use",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
@@ -216,21 +172,7 @@ public class AccountController {
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
             ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
             @ApiResponse(responseCode = "409", description = "No pending email change",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
@@ -265,21 +207,6 @@ public class AccountController {
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProfileDTO.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
                 )
             )
         }
@@ -321,21 +248,6 @@ public class AccountController {
             @ApiResponse(
                 responseCode = "400", description = "Invalid request",
                 content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
@@ -383,28 +295,7 @@ public class AccountController {
         summary     = "Delete user account",
         description = "Delete the authenticated user's account",
         responses   = {
-            @ApiResponse(responseCode = "204", description = "Account deleted successfully"),
-            @ApiResponse(
-                responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            )
+            @ApiResponse(responseCode = "204", description = "Account deleted successfully")
         }
     )
     @DeleteMapping(

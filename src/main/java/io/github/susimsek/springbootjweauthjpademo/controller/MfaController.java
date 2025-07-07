@@ -49,22 +49,6 @@ public class MfaController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = MfaStatusDTO.class)
                 )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -103,28 +87,6 @@ public class MfaController {
                 responseCode = "400",
                 description  = "Invalid password",
                 content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
@@ -178,30 +140,8 @@ public class MfaController {
                 )
             ),
             @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
                 responseCode = "409", description = "MFA already verified or not enabled",
                 content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
@@ -252,30 +192,8 @@ public class MfaController {
                 )
             ),
             @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
                 responseCode = "409", description = "MFA already disabled",
                 content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
@@ -325,30 +243,8 @@ public class MfaController {
                 )
             ),
             @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
                 responseCode = "409", description = "MFA not enabled",
                 content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )

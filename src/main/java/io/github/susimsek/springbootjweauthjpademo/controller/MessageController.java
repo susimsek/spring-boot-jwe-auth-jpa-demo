@@ -56,13 +56,7 @@ public class MessageController {
         description = "Get paginated list of messages",
         responses = {
             @ApiResponse(responseCode = "200", description = "Page of messages returned",
-                content = @Content(schema = @Schema(implementation = PagedModel.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)))
+                content = @Content(schema = @Schema(implementation = PagedModel.class)))
         }
     )
     @GetMapping(params = {"page","size"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,12 +80,6 @@ public class MessageController {
     @Operation(summary = "Get message by ID", description = "Retrieve a message by its ID", responses = {
         @ApiResponse(responseCode = "200", description = "Message found",
             content = @Content(schema = @Schema(implementation = MessageDTO.class))),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "404", description = "Message not found",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ProblemDetail.class)))
@@ -114,12 +102,6 @@ public class MessageController {
 
     @Operation(summary = "Create a new message", responses = {
         @ApiResponse(responseCode = "201", description = "Message created"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "409", description = "Code conflict",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ProblemDetail.class)))
@@ -149,12 +131,6 @@ public class MessageController {
 
     @Operation(summary = "Update an existing message", responses = {
         @ApiResponse(responseCode = "200", description = "Message updated"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "404", description = "Message not found"),
         @ApiResponse(responseCode = "409", description = "Code conflict")
     })
@@ -184,12 +160,6 @@ public class MessageController {
 
     @Operation(summary = "Partially update a message", responses = {
         @ApiResponse(responseCode = "200", description = "Message updated"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "404", description = "Message not found"),
         @ApiResponse(responseCode = "409", description = "Code conflict")
     })
@@ -218,12 +188,6 @@ public class MessageController {
 
     @Operation(summary = "Delete a message", responses = {
         @ApiResponse(responseCode = "204", description = "Message deleted"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "404", description = "Message not found")
     })
     @DeleteMapping("/{messageId}")

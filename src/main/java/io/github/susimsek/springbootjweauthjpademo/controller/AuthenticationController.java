@@ -83,12 +83,6 @@ public class AuthenticationController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -143,12 +137,6 @@ public class AuthenticationController {
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = LoginResultDTO.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
                 )
             )
         }
@@ -209,12 +197,6 @@ public class AuthenticationController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -248,20 +230,6 @@ public class AuthenticationController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = TotpDTO.class)
                 )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -289,26 +257,6 @@ public class AuthenticationController {
                 )
             ),
             @ApiResponse(responseCode = "400", description = "Invalid or expired code",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
@@ -368,26 +316,6 @@ public class AuthenticationController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -434,26 +362,6 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Logout successful",
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE
-                )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
                 )
             )
         }
@@ -538,12 +446,6 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "400", description = "Invalid request",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemDetail.class))
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )

@@ -50,12 +50,6 @@ public class AdminAvatarController {
             @ApiResponse(responseCode = "400", description = "Invalid file",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                   schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                   schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "413", description = "Payload Too Large")
         }
     )
@@ -85,13 +79,6 @@ public class AdminAvatarController {
         description = "Delete the avatar for the specified user (admin action).",
         responses   = {
             @ApiResponse(responseCode = "204", description = "Avatar deleted")
-            ,
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                   schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                   schema = @Schema(implementation = ProblemDetail.class)))
         }
     )
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

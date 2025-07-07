@@ -2,6 +2,7 @@ package io.github.susimsek.springbootjweauthjpademo.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
 import org.springframework.util.StringUtils;
@@ -11,22 +12,30 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(
+    name = "Violation",
+    description = "Details of a single validation failure"
+)
 public record Violation(
     @JsonProperty("code")
+    @Schema(description = "Validation rule code that failed", example = "size")
     String code,
 
     @JsonProperty("object")
+    @Schema(description = "Name of the validated object", example = "generateArticleRequest")
     String objectName,
 
     @JsonProperty
+    @Schema(description = "Name of the invalid field", example = "topic")
     String field,
 
     @JsonProperty
+    @Schema(description = "Value that was rejected", example = "x")
     Object rejectedValue,
 
     @JsonProperty
+    @Schema(description = "Reason why validation failed", example = "Field must be between 3 and 50 characters.")
     String message
 ) implements Serializable {
 

@@ -37,22 +37,6 @@ public class HelloController {
                 responseCode = "200",
                 description  = "Greeting returned",
                 content      = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -72,22 +56,6 @@ public class HelloController {
                 responseCode = "200",
                 description  = "Admin greeting returned",
                 content      = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
@@ -110,22 +78,6 @@ public class HelloController {
             @ApiResponse(
                 responseCode = "400",
                 description  = "Bad request",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
                 content      = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)

@@ -73,22 +73,6 @@ public class AvatarController {
                 )
             ),
             @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description  = "Forbidden",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(
                 responseCode = "404",
                 description  = "Avatar not found",
                 content      = @Content(
@@ -151,20 +135,6 @@ public class AvatarController {
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
             ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
             @ApiResponse(responseCode = "413", description = "Payload Too Large",
                 content = @Content
             ),
@@ -201,20 +171,6 @@ public class AvatarController {
                 responseCode = "204",
                 description  = "Avatar deleted",
                 content      = @Content
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )

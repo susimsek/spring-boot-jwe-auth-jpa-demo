@@ -64,13 +64,7 @@ public class AuthorityController {
                     mediaType    = MediaType.APPLICATION_JSON_VALUE,
                     array        = @ArraySchema(schema = @Schema(implementation = AuthorityDTO.class))
                 )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)))
+            )
         }
     )
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,13 +78,7 @@ public class AuthorityController {
         description = "Get a paginated list of authorities",
         responses = {
             @ApiResponse(responseCode = "200", description = "Page of authorities returned",
-                content = @Content(schema = @Schema(implementation = Page.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)))
+                content = @Content(schema = @Schema(implementation = Page.class)))
         }
     )
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, params = {"page", "size"})
@@ -117,12 +105,6 @@ public class AuthorityController {
         responses = {
             @ApiResponse(responseCode = "200", description = "Authority found",
                 content = @Content(schema = @Schema(implementation = AuthorityDTO.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "404", description = "Authority not found",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemDetail.class)))
@@ -149,12 +131,6 @@ public class AuthorityController {
         summary = "Create a new authority",
         responses = {
             @ApiResponse(responseCode = "201", description = "Authority created"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "409", description = "Name conflict",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemDetail.class)))
@@ -187,12 +163,6 @@ public class AuthorityController {
         summary = "Update an existing authority",
         responses = {
             @ApiResponse(responseCode = "200", description = "Authority updated"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "404", description = "Authority not found"),
             @ApiResponse(responseCode = "409", description = "Name conflict",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -228,12 +198,6 @@ public class AuthorityController {
         summary = "Partially update an authority",
         responses = {
             @ApiResponse(responseCode = "200", description = "Authority updated"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "404", description = "Authority not found"),
             @ApiResponse(responseCode = "409", description = "Name conflict",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -269,12 +233,6 @@ public class AuthorityController {
         summary = "Delete an authority",
         responses = {
             @ApiResponse(responseCode = "204", description = "Authority deleted"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "409", description = "Protected authority",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemDetail.class))),

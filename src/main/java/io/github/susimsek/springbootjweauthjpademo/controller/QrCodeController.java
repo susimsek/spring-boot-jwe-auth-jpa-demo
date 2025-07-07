@@ -61,31 +61,11 @@ public class QrCodeController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema    = @Schema(implementation = ProblemDetail.class)
                 )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description  = "Unauthorized",
-                content      = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "403", description = "Forbidden",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemDetail.class)
-                )
-            ),
-            @ApiResponse(responseCode = "429", description = "Too many requests",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = ProblemDetail.class)
-                )
             )
         }
     )
     @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQrCode(
+    public ResponseEntity<byte[]> generateQrCode(
         @Parameter(
             description = "The text or URL to encode into the QR code",
             required    = true,
