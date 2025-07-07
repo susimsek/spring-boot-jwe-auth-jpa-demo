@@ -136,7 +136,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "403", description = "MFA setup required",
                 content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema    = @Schema(implementation = LoginResultDTO.class)
+                    schema    = @Schema(implementation = ProblemDetail.class)
                 )
             )
         }
