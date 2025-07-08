@@ -12,6 +12,7 @@ import io.github.susimsek.springbootjweauthjpademo.exception.ResourceNotFoundExc
 import io.github.susimsek.springbootjweauthjpademo.mapper.MessageMapper;
 import io.github.susimsek.springbootjweauthjpademo.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -130,5 +131,14 @@ public class MessageService {
         List<Message> messages = messageRepository.findByLocale(locale);
         return messages.stream()
             .collect(Collectors.toMap(Message::getCode, Message::getContent));
+    }
+
+    @CachePut(
+        cacheNames = MESSAGES_BY_LOCALE_CACHE,
+        key = "#locale.language",
+        unless = "#result.isEmpty()"
+    )
+    public Map<String, String> refreshMessages(Locale locale) {
+        return loadMessagesFromDatabase(locale.getLanguage());
     }
 }
