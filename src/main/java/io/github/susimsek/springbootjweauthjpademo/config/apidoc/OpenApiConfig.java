@@ -24,6 +24,7 @@ import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 
 import java.util.LinkedHashMap;
@@ -144,47 +145,36 @@ public class OpenApiConfig {
 
     private Map<String, Object> getDefaultErrorExample() {
         ProblemType type = ProblemType.SERVER_ERROR;
-        Map<String, Object> example = new LinkedHashMap<>();
-        example.put("type", type.getType());
-        example.put("title", "Internal Server Error");
-        example.put("status", 500);
-        example.put("detail", "An unexpected error occurred. Please try again later.");
-        example.put("instance", "/api/qrcode");
-        example.put("error", type.getError());
-        return example;
+        return createProblemExample(type, HttpStatus.INTERNAL_SERVER_ERROR,
+            "An unexpected error occurred. Please try again later.");
     }
 
     private Map<String, Object> getRateLimitErrorExample() {
         ProblemType type = ProblemType.RATE_LIMIT_EXCEEDED;
-        Map<String, Object> example = new LinkedHashMap<>();
-        example.put("type", type.getType());
-        example.put("title", "Rate Limit Exceeded");
-        example.put("status", 429);
-        example.put("detail", "You have exceeded the allowed request rate.");
-        example.put("instance", "/api/qrcode");
-        example.put("error", type.getError());
-        return example;
+        return createProblemExample(type, HttpStatus.TOO_MANY_REQUESTS,
+            "You have exceeded the allowed request rate.");
     }
 
     private Map<String, Object> getUnauthorizedExample() {
         ProblemType type = ProblemType.INVALID_TOKEN;
-        Map<String, Object> example = new LinkedHashMap<>();
-        example.put("type", type.getType());
-        example.put("title", "Invalid Token");
-        example.put("status", 401);
-        example.put("detail", "Invalid token.");
-        example.put("instance", "/api/qrcode");
-        example.put("error", type.getError());
-        return example;
+        return createProblemExample(type, HttpStatus.UNAUTHORIZED,
+            "Invalid token.");
     }
 
     private Map<String, Object> getAccessDeniedExample() {
         ProblemType type = ProblemType.ACCESS_DENIED;
+        return createProblemExample(type, HttpStatus.FORBIDDEN,
+            "You do not have permission to access this resource.");
+    }
+
+    private Map<String, Object> createProblemExample(ProblemType type,
+                                                     HttpStatus status,
+                                                     String detail) {
         Map<String, Object> example = new LinkedHashMap<>();
         example.put("type", type.getType());
-        example.put("title", "Access Denied");
-        example.put("status", 403);
-        example.put("detail", "You do not have permission to access this resource.");
+        example.put("title", status.getReasonPhrase());
+        example.put("status", status.value());
+        example.put("detail", detail);
         example.put("instance", "/api/qrcode");
         example.put("error", type.getError());
         return example;
