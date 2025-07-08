@@ -134,7 +134,7 @@
     };
 
     try {
-      const res = await apiRequest('/api/admin/messages', {
+      const res = await apiRequest('/api/v1/admin/messages', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(payload)

@@ -118,7 +118,7 @@
 
   async function init() {
     try {
-      const res = await apiRequest(`/api/admin/messages/${messageId}`);
+      const res = await apiRequest(`/api/v1/admin/messages/${messageId}`);
       const links = res.data._links || {};
       window.updateMessageUrl = links.update?.href;
       if (res?.status === 200) {

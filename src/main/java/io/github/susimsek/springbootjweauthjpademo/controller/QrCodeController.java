@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/qrcode")
+@RequestMapping("/api/v1/qrcode")
 @RequiredArgsConstructor
 @Validated
 @Tag(

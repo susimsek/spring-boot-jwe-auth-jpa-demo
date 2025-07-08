@@ -175,7 +175,7 @@ public class OpenApiConfig {
         example.put("title", status.getReasonPhrase());
         example.put("status", status.value());
         example.put("detail", detail);
-        example.put("instance", "/api/qrcode");
+        example.put("instance", "/api/v1/qrcode");
         example.put("error", type.getError());
         return example;
     }

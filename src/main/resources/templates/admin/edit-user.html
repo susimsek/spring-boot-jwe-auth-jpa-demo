@@ -292,7 +292,7 @@
   async function init() {
     try {
       // load authorities
-      const resAuth = await apiRequest('/api/admin/authorities');
+      const resAuth = await apiRequest('/api/v1/admin/authorities');
       if (resAuth?.status === 200) {
         resAuth.data.forEach(({ name, description }) => {
           const opt = document.createElement('option');
@@ -302,7 +302,7 @@
         });
       }
       // load user
-      const resUser = await apiRequest(`/api/admin/users/${userId}`);
+      const resUser = await apiRequest(`/api/v1/admin/users/${userId}`);
       // HATEOAS links from server
       const links = resUser.data._links || {};
       // URLs for update and avatar operations

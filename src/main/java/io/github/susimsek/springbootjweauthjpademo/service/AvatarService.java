@@ -88,7 +88,7 @@ public class AvatarService {
 
     private String buildImageUrl(String userId, long version) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/api/account/{userId}/avatar?v={version}")
+            .path("/api/v1/account/{userId}/avatar?v={version}")
             .buildAndExpand(userId, version)
             .toUriString();
     }

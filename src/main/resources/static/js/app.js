@@ -7,12 +7,12 @@ export const DEFAULT_AVATAR = '/images/default-avatar.png';
 export async function apiRequest(url, opts = {}) {
   // Centralized response handling (handles 401, 403, 429, 500, 503)
   async function handleResponse(status, data) {
-    const isAuthEndpoint = url.endsWith('/api/auth/login')
-      || url.endsWith('/api/auth/refresh-token');
+    const isAuthEndpoint = url.endsWith('/api/v1/auth/login')
+      || url.endsWith('/api/v1/auth/refresh-token');
     if (status === 401 && !isAuthEndpoint && !opts._retry) {
       if (!data || data.error === 'invalid_token') {
         opts._retry = true;
-        const r = await fetch('/api/auth/refresh-token', {
+        const r = await fetch('/api/v1/auth/refresh-token', {
           method: 'POST',
           credentials: 'include'
         });

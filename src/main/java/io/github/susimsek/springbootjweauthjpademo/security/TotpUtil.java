@@ -43,7 +43,7 @@ public class TotpUtil {
             .toUriString();
 
         return baseUrl
-            + "/api/qrcode?data=" + encoded
+            + "/api/v1/qrcode?data=" + encoded
             + "&size=" + size;
     }
 }

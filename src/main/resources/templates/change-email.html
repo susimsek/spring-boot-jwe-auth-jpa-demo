@@ -167,7 +167,7 @@
 
     try {
 
-      const result = await apiRequest('/api/account/change-email', {
+      const result = await apiRequest('/api/v1/account/change-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

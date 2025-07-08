@@ -44,7 +44,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-* **API** base: `http://localhost:8080/api/`
+* **API** base: `http://localhost:8080/api/v1`
 * **UI**: `http://localhost:8080`
 
 ### 3. H2 Console

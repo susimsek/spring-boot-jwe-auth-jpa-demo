@@ -45,7 +45,7 @@
 
     try {
       // 2) Yeni apiRequest, artık { status, data } döndüğü için
-      const result = await apiRequest('/api/hello', {
+      const result = await apiRequest('/api/v1/hello', {
         method: 'GET',
         headers: { 'Accept': 'text/plain' }
       });

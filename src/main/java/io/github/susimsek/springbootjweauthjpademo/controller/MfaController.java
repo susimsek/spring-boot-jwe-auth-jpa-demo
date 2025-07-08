@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/account/mfa")
+@RequestMapping("/api/v1/account/mfa")
 @RequiredArgsConstructor
 @Tag(name = "mfa", description = "Endpoints for managing Multi-Factor Authentication")
 @Slf4j

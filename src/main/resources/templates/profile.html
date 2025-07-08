@@ -314,7 +314,7 @@
     }
 
     // 1) Load profile data
-    const res = await apiRequest('/api/account/profile', { method: 'GET' });
+    const res = await apiRequest('/api/v1/account/profile', { method: 'GET' });
     if (res && res.status === 200) {
       const data = res.data;
       const links = data._links || {};

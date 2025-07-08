@@ -241,7 +241,7 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
 
     // Populate authority filter from service
     const authoritySelect = document.getElementById('authorityFilter');
-    apiRequest('/api/admin/authorities')
+    apiRequest('/api/v1/admin/authorities')
       .then(res => {
         if (res && res.status === 200) {
           res.data.forEach(auth => {
@@ -341,7 +341,7 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
       params.push(`sort=${currentSortField},${dir}`);
     }
     if (filter) params.push(`search=${encodeURIComponent(filter)}`);
-    const res = await apiRequest(`/api/admin/users?${params.join('&')}`);
+    const res = await apiRequest(`/api/v1/admin/users?${params.join('&')}`);
     const links = res.data._links;
 
     toggleSpinner(false);

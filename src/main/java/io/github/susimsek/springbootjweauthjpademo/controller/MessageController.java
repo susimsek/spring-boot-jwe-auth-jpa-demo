@@ -41,7 +41,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/admin/messages")
+@RequestMapping("/api/v1/admin/messages")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "messages", description = "Admin operations for message management")

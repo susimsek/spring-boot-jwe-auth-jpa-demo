@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static io.github.susimsek.springbootjweauthjpademo.security.SecurityUtils.AUTHORITIES_KEY;
 
 @RestController
-@RequestMapping("/api/hello")
+@RequestMapping("/api/v1/hello")
 @RequiredArgsConstructor
 @Tag(name = "hello", description = "Endpoints for simple greetings")
 @Slf4j

@@ -118,9 +118,9 @@
     const params = new URLSearchParams(window.location.search);
     const flow   = params.get('flow') || 'REGISTRATION';
 
-    // 1) /api/auth/setup-totp endpoint’ini çağırıyoruz (HTTP-only mfa cookie otomatik gönderilir)
+    // 1) /api/v1/auth/setup-totp endpoint’ini çağırıyoruz (HTTP-only mfa cookie otomatik gönderilir)
     try {
-      const result = await apiRequest('/api/auth/setup-totp', {
+      const result = await apiRequest('/api/v1/auth/setup-totp', {
         method: 'POST'
       });
 
@@ -204,7 +204,7 @@
         verifyAlert.classList.add('d-none');
 
         try {
-          const result2 = await apiRequest('/api/auth/confirm-totp', {
+          const result2 = await apiRequest('/api/v1/auth/confirm-totp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code, flow })

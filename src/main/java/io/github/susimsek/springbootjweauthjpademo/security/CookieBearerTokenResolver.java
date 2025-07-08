@@ -32,7 +32,7 @@ public class CookieBearerTokenResolver implements BearerTokenResolver {
     private final RequestMatcher refreshMatcher =
         PathPatternRequestMatcher
             .withDefaults()
-            .matcher(HttpMethod.POST, "/api/auth/refresh-token");
+            .matcher(HttpMethod.POST, "/api/v1/auth/refresh-token");
 
     @Override
     public String resolve(HttpServletRequest request) {

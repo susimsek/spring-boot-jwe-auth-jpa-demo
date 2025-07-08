@@ -93,8 +93,8 @@
     }
 
     try {
-      // /api/auth/verify-email?token=... çağrısı
-      const result = await apiRequest(`/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
+      // /api/v1/auth/verify-email?token=... çağrısı
+      const result = await apiRequest(`/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`, {
         method: 'GET'
       });
 

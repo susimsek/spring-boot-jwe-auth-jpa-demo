@@ -44,7 +44,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/admin/authorities")
+@RequestMapping("/api/v1/admin/authorities")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "authorities", description = "Admin operations for authority management")

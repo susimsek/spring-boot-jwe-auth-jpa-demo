@@ -270,7 +270,7 @@
       const dir = sortState === 1 ? 'asc' : 'desc';
       params.push(`sort=${currentSortField},${dir}`);
     }
-    const res = await apiRequest(`/api/admin/messages?${params.join('&')}`);
+    const res = await apiRequest(`/api/v1/admin/messages?${params.join('&')}`);
     toggleSpinner(false);
     if (!res || res.status !== 200) {
       return showAlert('Failed to load messages.', 'danger');

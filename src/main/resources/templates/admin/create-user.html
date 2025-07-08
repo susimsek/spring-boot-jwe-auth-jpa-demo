@@ -238,7 +238,7 @@
   // load authorities
   async function loadAuthorities() {
     try {
-      const res = await apiRequest('/api/admin/authorities');
+      const res = await apiRequest('/api/v1/admin/authorities');
       if (res?.status === 200 && Array.isArray(res.data)) {
         res.data.forEach(({ name, description }) => {
           const opt = document.createElement('option');
@@ -341,7 +341,7 @@
     };
 
     try {
-      const res = await apiRequest('/api/admin/users', {
+      const res = await apiRequest('/api/v1/admin/users', {
         method: 'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload)

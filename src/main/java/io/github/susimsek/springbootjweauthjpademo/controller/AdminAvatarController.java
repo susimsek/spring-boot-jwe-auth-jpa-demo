@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/admin/users/{userId}/avatar")
+@RequestMapping("/api/v1/admin/users/{userId}/avatar")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "admin-avatars", description = "Admin endpoints for managing user avatars")

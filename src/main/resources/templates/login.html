@@ -167,7 +167,7 @@
 
     try {
       // 2) Login call
-      const loginResult = await apiRequest('/api/auth/login', {
+      const loginResult = await apiRequest('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

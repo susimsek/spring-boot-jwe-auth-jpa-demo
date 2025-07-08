@@ -370,7 +370,7 @@
   async function fetchMfaStatus() {
     try {
       // apiRequest artık { status, data } döndürüyor
-      const result = await apiRequest('/api/account/mfa/status', { method: 'GET' });
+      const result = await apiRequest('/api/v1/account/mfa/status', { method: 'GET' });
 
       // Eğer yönlendirme olduysa veya undefined geldiyse buradan çık
       if (!result) {

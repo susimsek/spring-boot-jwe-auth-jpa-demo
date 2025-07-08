@@ -36,7 +36,7 @@ public record ProblemDetail(
 
     @Schema(
         description = "A URI reference that identifies the specific occurrence",
-        example     = "/api/article/generate"
+        example     = "/api/v1/article/generate"
     )
     String instance,
 

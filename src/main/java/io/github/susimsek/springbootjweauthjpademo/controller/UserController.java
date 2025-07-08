@@ -47,7 +47,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "admin-users", description = "Admin operations for user management")

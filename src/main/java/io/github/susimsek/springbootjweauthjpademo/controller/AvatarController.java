@@ -40,7 +40,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/v1/account")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "avatar", description = "Endpoints for managing user avatars")

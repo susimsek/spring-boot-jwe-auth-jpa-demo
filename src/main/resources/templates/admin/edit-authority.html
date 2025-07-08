@@ -114,7 +114,7 @@
 
   async function init() {
     try {
-      const res = await apiRequest(`/api/admin/authorities/${authorityId}`);
+      const res = await apiRequest(`/api/v1/admin/authorities/${authorityId}`);
       // HATEOAS links provided by the API
       const links = res.data._links || {};
       window.updateAuthorityUrl = links.update?.href;

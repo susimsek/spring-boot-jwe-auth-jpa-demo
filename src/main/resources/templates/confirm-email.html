@@ -80,7 +80,7 @@
     }
 
     try {
-      const result = await apiRequest(`/api/account/confirm-email?token=${encodeURIComponent(token)}`, {
+      const result = await apiRequest(`/api/v1/account/confirm-email?token=${encodeURIComponent(token)}`, {
         method: 'GET'
       });
 
