@@ -47,6 +47,7 @@
     <liquibase-plugin.username/>
     <resource.delimiter>@</resource.delimiter>
     <spring.profiles.active>dev</spring.profiles.active>
+    <loki-logback.version>2.0.0</loki-logback.version>
   </properties>
   <dependencies>
     <dependency>
@@ -68,6 +69,18 @@
     <dependency>
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing-bridge-brave</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter-brave</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -132,6 +145,11 @@
       <groupId>com.bucket4j</groupId>
       <artifactId>bucket4j_jdk17-lettuce</artifactId>
       <version>${bucket4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.loki4j</groupId>
+      <artifactId>loki-logback-appender</artifactId>
+      <version>${loki-logback.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

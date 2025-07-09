@@ -104,5 +104,10 @@ public interface ApplicationDefaults {
             Set<String> jsonBodyFields = Set.of("$.password", "*.token");
             String replacement = "***";
         }
+
+        interface Loki {
+            boolean enabled = false;
+            String url = "http://localhost:3100/loki/api/v1/push";
+        }
     }
 }

@@ -187,6 +187,7 @@ public class ApplicationProperties {
         private boolean aspectEnabled = ApplicationDefaults.Logging.aspectEnabled;
         private boolean clientInterceptorEnabled = ApplicationDefaults.Logging.clientInterceptorEnabled;
         private final Obfuscate obfuscate = new Obfuscate();
+        private final Loki loki = new Loki();
 
         @Getter
         @Setter
@@ -197,6 +198,13 @@ public class ApplicationProperties {
             private Set<String> paths = ApplicationDefaults.Logging.Obfuscate.paths;
             private Set<String> jsonBodyFields = ApplicationDefaults.Logging.Obfuscate.jsonBodyFields;
             private String replacement = ApplicationDefaults.Logging.Obfuscate.replacement;
+        }
+
+        @Getter
+        @Setter
+        public static class Loki {
+            private boolean enabled = ApplicationDefaults.Logging.Loki.enabled;
+            private String url = ApplicationDefaults.Logging.Loki.url;
         }
     }
 

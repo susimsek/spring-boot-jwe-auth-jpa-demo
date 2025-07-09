@@ -39,6 +39,14 @@ logging:
     io.github.susimsek.springbootjweauthjpademo: DEBUG
     org.hibernate.SQL: DEBUG
 
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+
 application:
   liquibase:
     async-start: true
@@ -60,6 +68,8 @@ application:
       enabled: true
       port: 6379
   logging:
+    loki:
+      enabled: false
     level: full
     filter-enabled: true
     aspect-enabled: true
