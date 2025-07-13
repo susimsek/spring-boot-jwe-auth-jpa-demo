@@ -205,6 +205,14 @@ public class ApplicationProperties {
         public static class Loki {
             private boolean enabled = ApplicationDefaults.Logging.Loki.enabled;
             private String url = ApplicationDefaults.Logging.Loki.url;
+            private final Batch batch = new Batch();
+
+            @Getter
+            @Setter
+            public static class Batch {
+                private int maxItems = ApplicationDefaults.Logging.Loki.Batch.maxItems;
+                private Duration timeout = ApplicationDefaults.Logging.Loki.Batch.timeout;
+            }
         }
     }
 

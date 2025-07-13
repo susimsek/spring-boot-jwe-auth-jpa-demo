@@ -102,6 +102,11 @@ public class LoggingConfig {
             http.setSender(httpSender);
             loki4jAppender.setHttp(http);
 
+            var batch = new PipelineConfigAppenderBase.BatchCfg();
+            batch.setMaxItems(props.getBatch().getMaxItems());
+            batch.setTimeoutMs(props.getBatch().getTimeout().toMillis());
+            loki4jAppender.setBatch(batch);
+
             String applicationName = environment.getProperty("spring.application.name", "my-app");
             String pattern = environment.getProperty("logging.pattern.console",
                 "%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%5p){highlight} %clr(${PID:- }" +
