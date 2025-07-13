@@ -19,6 +19,7 @@ public class JsonLogFormatter implements LogFormatter {
         ObjectNode logNode = objectMapper.createObjectNode();
         logNode.put("source", httpLog.getSource().toString().toLowerCase());
         logNode.put("type", httpLog.getType().toString().toLowerCase());
+        logNode.put("correlation", httpLog.getCorrelation());
         logNode.put("method", httpLog.getMethod().name());
         logNode.put("uri", httpLog.getUri().toString());
         logNode.put("path", httpLog.getUri().getPath());

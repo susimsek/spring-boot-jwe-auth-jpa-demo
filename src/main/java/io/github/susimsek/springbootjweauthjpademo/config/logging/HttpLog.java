@@ -20,6 +20,8 @@ public class HttpLog {
 
     private HttpLogType type;
 
+    private String correlation;
+
     private HttpMethod method;
 
     private URI uri;

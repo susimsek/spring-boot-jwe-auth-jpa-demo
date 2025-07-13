@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -46,6 +47,11 @@ public class LoggingFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain chain)
                                     throws ServletException, IOException {
+        // Ensure correlation uses the current traceId
+        String traceId = MDC.get("traceId");
+        if (traceId != null) {
+            MDC.put("correlation", traceId);
+        }
         if (!props.getLevel().atLeast(HttpLogLevel.BASIC)) {
             chain.doFilter(request, response);
             return;
@@ -96,6 +102,7 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         return HttpLog.builder()
             .type(HttpLogType.REQUEST)
+            .correlation(MDC.get("traceId"))
             .method(HttpMethod.valueOf(reqWrapper.getMethod()))
             .uri(maskedUri)
             .statusCode(null)
@@ -127,6 +134,7 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         return HttpLog.builder()
             .type(HttpLogType.RESPONSE)
+            .correlation(MDC.get("traceId"))
             .method(HttpMethod.valueOf(reqWrapper.getMethod()))
             .uri(maskedUri)
             .statusCode(resWrapper.getStatus())

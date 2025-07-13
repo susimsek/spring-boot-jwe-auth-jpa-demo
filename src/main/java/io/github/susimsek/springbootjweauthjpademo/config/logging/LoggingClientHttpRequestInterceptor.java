@@ -5,6 +5,7 @@ import io.github.susimsek.springbootjweauthjpademo.config.ApplicationProperties;
 import io.github.susimsek.springbootjweauthjpademo.util.WebUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
@@ -89,6 +90,7 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
         // 3. Build log object
         return HttpLog.builder()
                 .type(HttpLogType.REQUEST)
+                .correlation(MDC.get("traceId"))
                 .method(request.getMethod())
                 .uri(maskedUri)
                 .statusCode(null)
@@ -121,6 +123,7 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
         // 3. Build log object
         return HttpLog.builder()
                 .type(HttpLogType.RESPONSE)
+                .correlation(MDC.get("traceId"))
                 .method(request.getMethod())
                 .uri(maskedUri)
                 .statusCode(response.getStatusCode().value())
