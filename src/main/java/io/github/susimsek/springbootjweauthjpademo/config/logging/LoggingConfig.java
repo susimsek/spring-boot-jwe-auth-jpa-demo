@@ -50,7 +50,7 @@ public class LoggingConfig {
         registration.setName(FILTER_NAME);
         registration.setFilter(filter);
         registration.addUrlPatterns("/api/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE);
         registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
         return registration;
     }
