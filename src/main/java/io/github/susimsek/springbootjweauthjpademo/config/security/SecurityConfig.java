@@ -26,15 +26,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity(securedEnabled = true)
@@ -43,7 +40,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   MvcRequestMatcher.Builder mvc,
                                                    ProblemSupport problemSupport) throws Exception {
         http
             .cors(withDefaults())
@@ -71,26 +67,21 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/swagger-ui/**"
                     ).permitAll()
-                    .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/register")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/verify-email")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/account/confirm-email")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/login")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/forgot-password")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/reset-password")).permitAll()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/qrcode")).authenticated()
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/refresh-token"))
-                    .hasAuthority("ROLE_REFRESH")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/setup-totp"))
-                    .hasAuthority("ROLE_MFA")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/confirm-totp"))
-                    .hasAuthority("ROLE_MFA")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/auth/verify-totp"))
-                    .hasAuthority("ROLE_MFA")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/hello/admin"))
-                    .hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/admin/**")).hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(mvc.pattern(API_PREFIX + "/**")).hasAuthority("ROLE_ACCESS")
+                    .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers(API_PREFIX + "/auth/register").permitAll()
+                    .requestMatchers(API_PREFIX + "/auth/verify-email").permitAll()
+                    .requestMatchers(API_PREFIX + "/account/confirm-email").permitAll()
+                    .requestMatchers(API_PREFIX + "/auth/login").permitAll()
+                    .requestMatchers(API_PREFIX + "/auth/forgot-password").permitAll()
+                    .requestMatchers(API_PREFIX + "/auth/reset-password").permitAll()
+                    .requestMatchers(API_PREFIX + "/qrcode").authenticated()
+                    .requestMatchers(API_PREFIX + "/auth/refresh-token").hasAuthority("ROLE_REFRESH")
+                    .requestMatchers(API_PREFIX + "/auth/setup-totp").hasAuthority("ROLE_MFA")
+                    .requestMatchers(API_PREFIX + "/auth/confirm-totp").hasAuthority("ROLE_MFA")
+                    .requestMatchers(API_PREFIX + "/auth/verify-totp").hasAuthority("ROLE_MFA")
+                    .requestMatchers(API_PREFIX + "/hello/admin").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(API_PREFIX + "/admin/**").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(API_PREFIX + "/**").hasAuthority("ROLE_ACCESS")
                     .anyRequest().authenticated()
             )
             .formLogin(AbstractHttpConfigurer::disable
@@ -159,10 +150,4 @@ public class SecurityConfig {
     public AuthenticationEventPublisher authenticationEventPublisher(AccountLockService accountLockService) {
         return new DomainAuthenticationEventPublisher(accountLockService);
     }
-
-    @Bean
-    public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
-    }
-
 }
