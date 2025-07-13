@@ -69,7 +69,7 @@ application:
       port: 6379
   logging:
     loki:
-      enabled: false
+      enabled: true
     level: full
     filter-enabled: true
     aspect-enabled: true
