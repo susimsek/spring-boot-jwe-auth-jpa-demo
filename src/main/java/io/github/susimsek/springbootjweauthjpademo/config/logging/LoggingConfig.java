@@ -96,11 +96,11 @@ public class LoggingConfig {
             loki4jAppender.setContext(context);
             loki4jAppender.setName(LOKI_APPENDER_NAME);
 
-            var httpSender = new JavaHttpSender();
             var http = new PipelineConfigAppenderBase.HttpCfg();
-            http.setUrl(props.getUrl());
+            var httpSender = new JavaHttpSender();
             http.setSender(httpSender);
-            http.setRequestTimeoutMs(props.getRequestTimeout().toMillis());
+            http.setUrl(props.getHttp().getUrl());
+            http.setRequestTimeoutMs(props.getHttp().getRequestTimeout().toMillis());
             loki4jAppender.setHttp(http);
 
             var batch = new PipelineConfigAppenderBase.BatchCfg();
