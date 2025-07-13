@@ -100,6 +100,7 @@ public class LoggingConfig {
             var http = new PipelineConfigAppenderBase.HttpCfg();
             http.setUrl(props.getUrl());
             http.setSender(httpSender);
+            http.setRequestTimeoutMs(props.getRequestTimeout().toMillis());
             loki4jAppender.setHttp(http);
 
             var batch = new PipelineConfigAppenderBase.BatchCfg();

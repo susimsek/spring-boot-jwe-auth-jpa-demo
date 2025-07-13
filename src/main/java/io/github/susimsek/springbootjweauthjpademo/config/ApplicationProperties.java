@@ -205,6 +205,7 @@ public class ApplicationProperties {
         public static class Loki {
             private boolean enabled = ApplicationDefaults.Logging.Loki.enabled;
             private String url = ApplicationDefaults.Logging.Loki.url;
+            private Duration requestTimeout = ApplicationDefaults.Logging.Loki.requestTimeout;
             private final Batch batch = new Batch();
 
             @Getter

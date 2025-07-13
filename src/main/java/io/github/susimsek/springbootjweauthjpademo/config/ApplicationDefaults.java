@@ -108,6 +108,7 @@ public interface ApplicationDefaults {
         interface Loki {
             boolean enabled = false;
             String url = "http://localhost:3100/loki/api/v1/push";
+            Duration requestTimeout = Duration.ofSeconds(5);
 
             interface Batch {
                 int maxItems = 1000;
