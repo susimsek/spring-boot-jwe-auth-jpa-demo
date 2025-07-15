@@ -8,6 +8,5 @@ public class InvalidOtpException extends BadCredentialsException {
 
     public InvalidOtpException(String msg) {
         super(msg);
-        log.debug("InvalidOtpException thrown: {}", msg);
     }
 }

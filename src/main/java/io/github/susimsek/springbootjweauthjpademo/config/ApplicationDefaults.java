@@ -38,6 +38,13 @@ public interface ApplicationDefaults {
             int maxFailedAttempts = 5;
             Duration lockDuration = Duration.ofMinutes(15);
         }
+
+        interface Recaptcha {
+            String url = "https://www.google.com/recaptcha/api/siteverify";
+            String site = null;
+            String secret = null;
+            float threshold = 0.5f;
+        }
     }
 
     interface ApiDocs {

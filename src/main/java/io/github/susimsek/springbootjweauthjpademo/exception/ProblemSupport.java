@@ -51,4 +51,15 @@ public class ProblemSupport implements AuthenticationEntryPoint, AccessDeniedHan
             null,
             ex);
     }
+
+
+    public void handle(HttpServletRequest request,
+                       HttpServletResponse response,
+                       InvalidRecaptchaException ex) {
+        handlerExceptionResolver.resolveException(
+            request,
+            response,
+            null,
+            ex);
+    }
 }

@@ -268,6 +268,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidRecaptchaException.class)
+    public ResponseEntity<Object> handleInvalidRecaptcha(
+        InvalidRecaptchaException ex,
+        @NonNull WebRequest request
+    ) {
+        log.debug("InvalidRecaptchaException: {}", ex.getMessage());
+        return builder.build(
+            ProblemType.INVALID_RECAPTCHA,
+            HttpStatus.FORBIDDEN,
+            request,
+            null,
+            Collections.emptyMap()
+        );
+    }
+
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Object> handleResourceAlreadyExists(
         ResourceAlreadyExistsException ex,

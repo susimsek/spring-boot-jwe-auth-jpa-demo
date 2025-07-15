@@ -23,7 +23,7 @@ spring:
   http:
     client:
       connect-timeout: 5s
-      read-timeout: 10
+      read-timeout: 10s
   jpa:
     open-in-view: false
     hibernate:

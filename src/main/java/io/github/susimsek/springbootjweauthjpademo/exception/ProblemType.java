@@ -19,6 +19,7 @@ public enum ProblemType {
     ACCESS_DENIED("problem.access_denied", "access_denied"),
     MFA_SETUP_REQUIRED("problem.mfa_setup_required", "mfa_setup_required"),
     INVALID_OTP("problem.invalid_otp", "invalid_otp"),
+    INVALID_RECAPTCHA("problem.invalid_recaptcha", "invalid_recaptcha"),
     ACCOUNT_LOCKED("problem.account_locked", "account_locked"),
     RESOURCE_CONFLICT("problem.resource_conflict", "resource_conflict"),
     RESOURCE_NOT_FOUND("problem.resource_not_found", "resource_not_found"),

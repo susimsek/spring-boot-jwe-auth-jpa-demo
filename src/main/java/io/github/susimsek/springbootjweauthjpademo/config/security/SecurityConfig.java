@@ -36,7 +36,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-    private static final String API_PREFIX = "/api/v*";
+    public static final String API_PREFIX = "/api/v*";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,

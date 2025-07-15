@@ -86,6 +86,7 @@ public class ApplicationProperties {
         private final Mfa mfa = new Mfa();
         private final Encryption encryption = new Encryption();
         private final Lock lock = new Lock();
+        private final Recaptcha recaptcha = new Recaptcha();
 
         @Getter
         @Setter
@@ -125,6 +126,15 @@ public class ApplicationProperties {
         public static class Lock {
             private int maxFailedAttempts = ApplicationDefaults.Security.Lock.maxFailedAttempts;
             private Duration lockDuration = ApplicationDefaults.Security.Lock.lockDuration;
+        }
+
+        @Getter
+        @Setter
+        public static class Recaptcha {
+            private String url = ApplicationDefaults.Security.Recaptcha.url;
+            private String site = ApplicationDefaults.Security.Recaptcha.site;
+            private String secret = ApplicationDefaults.Security.Recaptcha.secret;
+            private float threshold = ApplicationDefaults.Security.Recaptcha.threshold;
         }
     }
 

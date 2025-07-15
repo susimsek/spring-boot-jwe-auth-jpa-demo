@@ -69,7 +69,7 @@ application:
       port: 6379
   logging:
     loki:
-      enabled: true
+      enabled: false
     level: full
     filter-enabled: true
     aspect-enabled: true
@@ -136,6 +136,9 @@ application:
       base64-secret: NF6PUE/Xd+bWgn+uaabRbm4xUfZdd4Pe27ZLs5/fNB8=
     mfa:
       issuer: ExampleApp
+    recaptcha:
+      site: ${RECAPTCHA_SITE}
+      secret: ${RECAPTCHA_SECRET}
     jwt:
       jwe-enabled: true
       issuer: http://auth.myapp.com

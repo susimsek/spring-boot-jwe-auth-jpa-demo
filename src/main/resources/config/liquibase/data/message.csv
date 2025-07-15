@@ -111,4 +111,5 @@ abc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_not_found.title;Message 
 bbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_not_found.detail;Message not found.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
 cbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.message_code_conflict.title;Message Code Conflict;2025-05-10 12:30:00;system;2025-05-10 12:00:00;system
 dbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.user_protected.title;Protected User;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
-ebc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.user_protected.detail;Cannot delete protected user account.;2025-05-10 12:00:00;system;2025-05-10 12:00:00;system
+ebc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.invalid_recaptcha.title;Invalid reCAPTCHA;2025-07-15 12:00:00;system;2025-07-15 12:00:00;system
+fbc9530f-3486-4ceb-b758-2bbb0bc8ad6d;en;problem.invalid_recaptcha.detail;reCAPTCHA validation failed.;2025-07-15 12:00:00;system;2025-07-15 12:00:00;system
