@@ -8,12 +8,12 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 
-@HttpExchange(
-    contentType = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-    accept = MediaType.APPLICATION_JSON_VALUE
-)
+@HttpExchange
 public interface RecaptchaClient {
 
-    @PostExchange
+    @PostExchange(
+        contentType = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+        accept = MediaType.APPLICATION_JSON_VALUE
+    )
     RecaptchaDTO verify(@RequestBody MultiValueMap<String,String> request);
 }
