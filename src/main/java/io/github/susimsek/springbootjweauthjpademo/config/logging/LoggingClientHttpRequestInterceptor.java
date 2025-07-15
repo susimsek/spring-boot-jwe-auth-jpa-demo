@@ -141,13 +141,24 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
         if (!shouldLog) {
             return null;
         }
+        String payload = toPayload(content);
+        if (payload == null) {
+            return null;
+        }
+        // Parse content type once
         MediaType mt = MediaType.parseMediaType(
             contentTypeHeader != null ? contentTypeHeader : MediaType.APPLICATION_JSON_VALUE
         );
-        boolean isJson = MediaType.APPLICATION_JSON.includes(mt)
-            || mt.getSubtype().endsWith("+json");
-        String payload = toPayload(content);
-        return isJson ? obfuscator.maskBody(payload) : payload;
+        // Form-urlencoded bodies
+        if (MediaType.APPLICATION_FORM_URLENCODED.includes(mt)) {
+            return obfuscator.maskFormBody(payload);
+        }
+        // JSON bodies
+        if (MediaType.APPLICATION_JSON.includes(mt) || mt.getSubtype().endsWith("+json")) {
+            return obfuscator.maskBody(payload);
+        }
+        // Other content types - return as-is
+        return payload;
     }
 
     private boolean shouldNotIntercept(HttpRequest request) {

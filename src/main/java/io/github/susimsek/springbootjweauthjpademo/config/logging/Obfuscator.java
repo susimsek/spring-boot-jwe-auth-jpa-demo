@@ -100,6 +100,22 @@ public class Obfuscator {
         }
     }
 
+    public String maskFormBody(String formBody) {
+        if (formBody == null || formBody.isBlank() || sensitiveParameters.isEmpty()) {
+            return formBody;
+        }
+        return Arrays.stream(formBody.split("&"))
+            .map(pair -> {
+                String[] kv = pair.split("=", 2);
+                String key = kv[0];
+                if (sensitiveParameters.contains(key)) {
+                    return key + "=" + replacement;
+                }
+                return pair;
+            })
+            .collect(Collectors.joining("&"));
+    }
+
     public String maskCookies(String cookieHeader) {
         return Arrays.stream(cookieHeader.split(";"))
             .map(String::trim)

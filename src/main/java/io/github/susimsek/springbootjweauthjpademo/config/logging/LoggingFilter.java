@@ -150,12 +150,22 @@ public class LoggingFilter extends OncePerRequestFilter {
         if (!shouldLog) {
             return null;
         }
+        String payload = toPayload(content);
+        if (payload == null) {
+            return null;
+        }
+
         MediaType mt = MediaType.parseMediaType(
             contentTypeHeader != null ? contentTypeHeader : MediaType.APPLICATION_JSON_VALUE
         );
-        boolean isJson = MediaType.APPLICATION_JSON.includes(mt)
-            || mt.getSubtype().endsWith("+json");
-        String payload = toPayload(content);
-        return isJson ? obfuscator.maskBody(payload) : payload;
+        // Form-url-encoded bodies
+        if (MediaType.APPLICATION_FORM_URLENCODED.includes(mt)) {
+            return obfuscator.maskFormBody(payload);
+        }
+        // JSON bodies
+        if (MediaType.APPLICATION_JSON.includes(mt) || mt.getSubtype().endsWith("+json")) {
+            return obfuscator.maskBody(payload);
+        }
+        return payload;
     }
 }
