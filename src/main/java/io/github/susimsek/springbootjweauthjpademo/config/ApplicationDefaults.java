@@ -106,7 +106,7 @@ public interface ApplicationDefaults {
         interface Obfuscate {
             Set<String> headers = Set.of("Authorization");
             Set<String> cookies = Set.of("accessToken", "mfaToken", "refreshToken");
-            Set<String> parameters = Set.of("token", "access_token");
+            Set<String> parameters = Set.of("token", "access_token", "secret");
             Set<String> paths = Set.of();
             Set<String> jsonBodyFields = Set.of("$.password", "*.token");
             String replacement = "***";
