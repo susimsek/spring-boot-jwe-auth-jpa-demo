@@ -7,12 +7,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.lang.NonNull;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -21,14 +24,16 @@ public class RecaptchaFilter extends OncePerRequestFilter {
     private final RecaptchaService recaptchaService;
     private final ProblemSupport problemSupport;
     private final RecaptchaTokenResolver tokenResolver;
-    private final AntPathMatcher matcher = new AntPathMatcher();
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        boolean isRegister = matcher.match("/api/v*/auth/register", uri);
-        boolean isLogin    = matcher.match("/api/v*/auth/login", uri);
-        return !(isRegister || isLogin);
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+        List<RequestMatcher> matchers = requestMatchers(
+            "/api/v*/auth/register",
+            "/api/v*/auth/login"
+        );
+        boolean matches = matchers.stream()
+            .anyMatch(matcher -> matcher.matches(request));
+        return !matches;
     }
 
     @Override
@@ -44,5 +49,13 @@ public class RecaptchaFilter extends OncePerRequestFilter {
         } catch (InvalidRecaptchaException ex) {
             problemSupport.handle(request, response, ex);
         }
+    }
+
+    private List<RequestMatcher> requestMatchers(String... patterns) {
+        List<RequestMatcher> matchers = new ArrayList<>();
+        for (String pattern : patterns) {
+            matchers.add(new AntPathRequestMatcher(pattern));
+        }
+        return matchers;
     }
 }
