@@ -17,7 +17,7 @@ public class DefaultRecaptchaTokenResolver implements RecaptchaTokenResolver {
     public String resolve(HttpServletRequest request) {
         String token = request.getHeader(HEADER_NAME);
         if (!StringUtils.hasText(token)) {
-            return null;
+            throw new InvalidRecaptchaException();
         }
         Matcher matcher = TOKEN_PATTERN.matcher(token);
         if (!matcher.matches()) {
