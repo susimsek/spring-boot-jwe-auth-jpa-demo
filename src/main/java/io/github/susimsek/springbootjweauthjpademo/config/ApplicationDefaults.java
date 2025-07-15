@@ -104,7 +104,7 @@ public interface ApplicationDefaults {
         List<String> clientExcludeUriPatterns = List.of();
 
         interface Obfuscate {
-            Set<String> headers = Set.of("Authorization");
+            Set<String> headers = Set.of("Authorization", "X-Recaptcha-Token");
             Set<String> cookies = Set.of("accessToken", "mfaToken", "refreshToken");
             Set<String> parameters = Set.of("token", "access_token", "secret", "response");
             Set<String> paths = Set.of();

@@ -4,6 +4,7 @@
       th:replace="~{fragments/layout :: layout('Login', ~{::body})}"
       lang="en">
 <body class="bg-body text-body">
+<div th:insert="~{fragments/recaptcha :: recaptcha}"></div>
 
 <div class="container py-5">
   <div class="row justify-content-center">
@@ -148,6 +149,11 @@
   // Form submission handler
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
+    // reCAPTCHA v3 token
+    const recaptchaToken = await grecaptcha.execute(
+      /*[[${@applicationProperties.security.recaptcha.site}]]*/,
+      { action: 'login' }
+    );
     errorDiv.style.display = 'none';
     document.getElementById('lockCountdown').style.display = 'none';
 
@@ -169,7 +175,10 @@
       // 2) Login call
       const loginResult = await apiRequest('/api/v1/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Recaptcha-Token': recaptchaToken
+        },
         body: JSON.stringify(payload)
       });
       if (!loginResult) return;

@@ -26,7 +26,9 @@ public class RecaptchaFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return !matcher.match("/api/v*/auth/register", uri);
+        boolean isRegister = matcher.match("/api/v*/auth/register", uri);
+        boolean isLogin    = matcher.match("/api/v*/auth/login", uri);
+        return !(isRegister || isLogin);
     }
 
     @Override
