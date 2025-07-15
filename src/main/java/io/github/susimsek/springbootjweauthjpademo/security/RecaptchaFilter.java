@@ -9,7 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+// import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -55,7 +56,9 @@ public class RecaptchaFilter extends OncePerRequestFilter {
     private List<RequestMatcher> requestMatchers(String... patterns) {
         List<RequestMatcher> matchers = new ArrayList<>();
         for (String pattern : patterns) {
-            matchers.add(new AntPathRequestMatcher(pattern));
+            matchers.add(
+                PathPatternRequestMatcher.withDefaults().matcher(pattern)
+            );
         }
         return matchers;
     }
