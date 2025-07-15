@@ -3,7 +3,7 @@
       th:replace="~{fragments/layout :: layout('Register', ~{::body})}"
       lang="en">
 <body class="bg-body text-body">
-<script src="https://www.google.com/recaptcha/api.js?render=6Lf2i4MrAAAAANABzYbL_1wsAODPBNFORCEIVPoS&hl=en" async defer></script>
+<div th:insert="~{fragments/recaptcha :: recaptcha}"></div>
 
 <nav aria-label="breadcrumb" class="bg-body-secondary py-2 mb-0">
   <div class="container-fluid">
