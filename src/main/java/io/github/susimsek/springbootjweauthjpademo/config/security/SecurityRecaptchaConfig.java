@@ -52,7 +52,7 @@ public class SecurityRecaptchaConfig {
         registration.setFilter(filter);
         registration.addUrlPatterns( "/api/*");
         registration.setDispatcherTypes(DispatcherType.REQUEST);
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
         return registration;
     }
 }

@@ -85,7 +85,7 @@ public class RateLimitConfig {
         registration.setName(FILTER_NAME);
         registration.setFilter(filter);
         registration.addUrlPatterns("/api/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
         registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
         return registration;
     }
