@@ -29,7 +29,8 @@ public class RecaptchaFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         List<RequestMatcher> matchers = requestMatchers(
             "/api/v*/auth/register",
-            "/api/v*/auth/login"
+            "/api/v*/auth/login",
+            "/api/v*/auth/forgot-password"
         );
         boolean matches = matchers.stream()
             .anyMatch(matcher -> matcher.matches(request));
