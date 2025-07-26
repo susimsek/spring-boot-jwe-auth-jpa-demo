@@ -75,6 +75,18 @@
               </button>
             </div>
 
+            <div class="d-flex align-items-center my-2">
+              <hr class="flex-grow-1"/>
+              <span class="mx-2 text-muted">OR</span>
+              <hr class="flex-grow-1"/>
+            </div>
+
+            <div class="d-grid gap-2 mb-3">
+              <a href="/oauth2/authorization/google" class="btn btn-danger">
+                <i class="fab fa-google me-2"></i>Login with Google
+              </a>
+            </div>
+
             <!-- Central Error Message -->
             <div
               id="errorMessage"
@@ -88,14 +100,6 @@
               class="alert alert-warning text-center py-2 mb-3"
               style="display: none;">
             </div>
-
-            <!-- Google OAuth2 Login -->
-            <div class="d-grid mb-3">
-              <a href="/oauth2/authorization/google" class="btn border">
-                <i class="fab fa-google me-2"></i>Login with Google
-              </a>
-            </div>
-
             <!-- Forgot Password (centered, on its own line) -->
             <div class="text-center">
               <a th:href="@{/forgot-password}" class="small">Forgot password?</a>
