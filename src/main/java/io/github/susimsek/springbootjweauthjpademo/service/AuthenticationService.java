@@ -118,21 +118,19 @@ public class AuthenticationService {
             Authentication auth = authenticationManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            UserPrincipal p = (UserPrincipal) auth.getPrincipal();
-            // Build profile
-            ProfileDTO profile = userMapper.toProfileDto(p);
-
             UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
+            // Build profile
+            ProfileDTO profile = userMapper.toProfileDto(principal);
             if (principal.isMfaEnabled()) {
                 // Issue an MFA‐only token
-                var mfaToken = jwtUtil.generateMfaToken(p.getId());
+                var mfaToken = jwtUtil.generateMfaToken(principal.getId());
                 return new LoginResultDTO(profile, null,null,
                     mfaToken, !principal.isMfaVerified());
             } else {
                 // Issue a full access token
                 List<String> roles = authorityMapper.toAuthorityNames(principal.getAuthorities());
-                var accessToken = jwtUtil.generateAccessToken(p.getId(), roles, false);
-                var refreshToken = refreshTokenService.createRefreshToken(p.getId());
+                var accessToken = jwtUtil.generateAccessToken(principal.getId(), roles, false);
+                var refreshToken = refreshTokenService.createRefreshToken(principal.getId());
 
                 return new LoginResultDTO(
                     profile, accessToken, refreshToken,null, null);
