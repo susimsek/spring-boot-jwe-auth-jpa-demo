@@ -1,19 +1,21 @@
 package io.github.susimsek.springbootjweauthjpademo.mapper;
 
+import io.github.susimsek.springbootjweauthjpademo.domain.User;
 import io.github.susimsek.springbootjweauthjpademo.dto.request.CreateUserRequestDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.request.PartialUpdateUserRequestDTO;
-import io.github.susimsek.springbootjweauthjpademo.dto.response.ProfileDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.request.RegisterRequestDTO;
-import io.github.susimsek.springbootjweauthjpademo.dto.response.RegistrationDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.request.UpdateUserRequestDTO;
+import io.github.susimsek.springbootjweauthjpademo.dto.response.ProfileDTO;
+import io.github.susimsek.springbootjweauthjpademo.dto.response.RegistrationDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.UserDTO;
-import io.github.susimsek.springbootjweauthjpademo.domain.User;
 import io.github.susimsek.springbootjweauthjpademo.security.UserPrincipal;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Mapper(componentModel = "spring", uses = AuthorityMapper.class)
 public interface UserMapper {
@@ -30,6 +32,19 @@ public interface UserMapper {
     @Mapping(target = "accountNonExpired",    constant = "true")
     @Mapping(target = "credentialsNonExpired", constant = "true")
     UserPrincipal toPrincipal(User entity);
+
+    @Mapping(target = "login", source = "user.username")
+    @Mapping(target = "accountNonExpired",    constant = "true")
+    @Mapping(target = "credentialsNonExpired", constant = "true")
+    @Mapping(target = "authorities", source = "user.authorities")
+    UserPrincipal toPrincipal(User user, OAuth2User oauth2User);
+
+    @Mapping(target = "login", source = "user.username")
+    @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "accountNonExpired",    constant = "true")
+    @Mapping(target = "credentialsNonExpired", constant = "true")
+    @Mapping(target = "authorities", source = "user.authorities")
+    UserPrincipal toPrincipal(User user, OidcUser oidcUser);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true) // set in service

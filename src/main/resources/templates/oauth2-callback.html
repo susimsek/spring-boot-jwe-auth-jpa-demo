@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('OAuth2 Callback', ~{::body})}"
+      lang="en">
+<body class="bg-body text-body">
+
+<div class="container py-5 text-center">
+  <div id="loader" class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <div id="errorMessage"
+       class="alert alert-danger text-center py-2 mb-3"
+       style="display: none;">
+  </div>
+</div>
+
+<script th:inline="javascript" type="module">
+
+  import {
+    apiRequest
+  } from [[@{/js/app.js}]];
+
+  (async function() {
+    const params = new URLSearchParams(window.location.search);
+    const token  = params.get('token');
+    const loader = document.getElementById('loader');
+    const errorDiv = document.getElementById('errorMessage');
+
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+
+    try {
+      const res = await apiRequest('/api/v1/account/profile', {
+        method: 'GET'
+      });
+      if (res && res.status === 200) {
+        const profile = res.data;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        window.location.href = '/';
+        return;
+      }
+      throw new Error(res?.data?.detail || 'Failed to load profile.');
+    } catch (e) {
+      loader.classList.add('d-none');
+      errorDiv.textContent = e.message || 'An error occurred while loading profile.';
+      errorDiv.style.display = 'block';
+    }
+  })();
+  /*]]>*/
+</script>
+
+</body>
+</html>

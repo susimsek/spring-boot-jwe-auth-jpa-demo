@@ -395,7 +395,7 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
       tr.innerHTML = `
         <td>${u.username}</td>
         <td><img src="${u.imageUrl||DEFAULT_AVATAR}"
-                 class="rounded-circle" width="32" height="32"></td>
+        referrerpolicy="no-referrer" class="rounded-circle" width="32" height="32"></td>
         <td>${u.firstName||''}</td>
         <td>${u.lastName||''}</td>
         <td>
@@ -522,7 +522,7 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
       <div class="row">
         <div class="col-md-4 text-center">
           <img src="${u.imageUrl||DEFAULT_AVATAR}"
-               class="rounded-circle mb-3" width="120" height="120">
+          referrerpolicy="no-referrer" class="rounded-circle mb-3" width="120" height="120">
         </div>
         <div class="col-md-8">
           <p><strong><i class="fa fa-user me-1"></i>Username:</strong> ${u.username}</p>

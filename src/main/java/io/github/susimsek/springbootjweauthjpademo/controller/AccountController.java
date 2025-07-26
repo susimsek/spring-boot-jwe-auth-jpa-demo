@@ -229,7 +229,13 @@ public class AccountController {
                 .withType(HttpMethod.DELETE.name()),
             linkTo(methodOn(AccountController.class).deleteAccount(null, null))
                 .withRel("delete-account")
-                .withType(HttpMethod.DELETE.name())
+                .withType(HttpMethod.DELETE.name()),
+            linkTo(methodOn(AuthenticationController.class).login(null))
+                .withRel("login"),
+            linkTo(methodOn(AuthenticationController.class).refreshToken(null))
+                .withRel("refresh-token"),
+            linkTo(methodOn(AuthenticationController.class).logout(null))
+                .withRel("logout")
         );
         return ResponseEntity.ok(model);
     }
@@ -286,6 +292,7 @@ public class AccountController {
             linkTo(methodOn(AccountController.class).deleteAccount((Jwt) null, null))
                 .withRel("delete-account")
                 .withType(HttpMethod.DELETE.name())
+
         );
         return ResponseEntity.ok(model);
     }

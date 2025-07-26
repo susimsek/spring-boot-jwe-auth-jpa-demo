@@ -33,6 +33,10 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     @Cacheable(cacheNames = USERS_BY_ID_CACHE, unless = "#result == null")
     Optional<User> findOneWithAuthoritiesById(String id);
 
+    @EntityGraph("User.withAuthorities")
+    @Cacheable(cacheNames = USERS_BY_ID_CACHE, unless = "#result == null")
+    Optional<User> findOneWithAuthoritiesByEmail(String email);
+
     Optional<User> findByUsername(String username);
 
     Optional<User> findByEmail(String email);

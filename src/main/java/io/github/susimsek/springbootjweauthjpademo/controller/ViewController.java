@@ -28,6 +28,11 @@ public class ViewController {
         return "login";
     }
 
+    @GetMapping("/oauth2/callback")
+    public String oauth2CallbackPage() {
+        return "oauth2-callback";
+    }
+
     @GetMapping("/verify-email")
     public String verifyEmailPage() {
         return "verify-email";

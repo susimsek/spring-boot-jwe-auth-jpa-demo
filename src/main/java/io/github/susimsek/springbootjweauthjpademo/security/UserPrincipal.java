@@ -4,13 +4,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, OidcUser {
 
     private final String id;
     private final String login;
@@ -33,6 +37,12 @@ public class UserPrincipal implements UserDetails {
     private final boolean mfaVerified;
     private final String mfaSecret;
     private final Collection<? extends GrantedAuthority> authorities;
+    private final transient Map<String, Object> attributes;
+
+
+    private final transient OidcIdToken idToken;
+    private final transient OidcUserInfo userInfo;
+    private final transient Map<String, Object> claims;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -60,7 +70,27 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
+    public String getName() {
+        return getUsername();
+    }
+
+    @Override
     public String getUsername() {
         return id;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return idToken;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return claims;
     }
 }

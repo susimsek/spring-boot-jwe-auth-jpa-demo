@@ -3,7 +3,10 @@ package io.github.susimsek.springbootjweauthjpademo.config.security;
 import io.github.susimsek.springbootjweauthjpademo.exception.ProblemSupport;
 import io.github.susimsek.springbootjweauthjpademo.mapper.UserMapper;
 import io.github.susimsek.springbootjweauthjpademo.security.DomainAuthenticationEventPublisher;
+import io.github.susimsek.springbootjweauthjpademo.security.DomainOAuth2UserService;
+import io.github.susimsek.springbootjweauthjpademo.security.DomainOidcUserService;
 import io.github.susimsek.springbootjweauthjpademo.security.DomainUserDetailsService;
+import io.github.susimsek.springbootjweauthjpademo.security.OAuth2AuthenticationSuccessHandler;
 import io.github.susimsek.springbootjweauthjpademo.security.TotpAuthenticationProvider;
 import io.github.susimsek.springbootjweauthjpademo.security.UserPrincipalService;
 import io.github.susimsek.springbootjweauthjpademo.service.AccountLockService;
@@ -40,7 +43,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   ProblemSupport problemSupport) throws Exception {
+                                                   ProblemSupport problemSupport,
+                                                   DomainOAuth2UserService domainOAuth2UserService,
+                                                   DomainOidcUserService domainOidcUserService,
+                                                   OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler) throws Exception {
         http
             .cors(withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
@@ -51,6 +57,7 @@ public class SecurityConfig {
                 authz
                     .requestMatchers(
                         "/login",
+                        "/oauth2/callback",
                         "/register",
                         "/verify-email",
                         "/confirm-email",
@@ -87,6 +94,15 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable
             )
             .logout(AbstractHttpConfigurer::disable)
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(domainOAuth2UserService)
+                    .oidcUserService(domainOidcUserService)
+                )
+                .successHandler(oAuth2SuccessHandler)
+            )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exceptions -> exceptions

@@ -99,6 +99,9 @@ public class User extends BaseEntity {
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified = false;
 
+    @Column(name = "provider", length = 50)
+    private String provider;
+
     @Column(name = "email_verification_token", length = 64)
     private String emailVerificationToken;
 

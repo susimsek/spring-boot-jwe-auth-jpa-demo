@@ -14,9 +14,7 @@
       <column name="username" type="varchar(50)">
         <constraints nullable="false" unique="true"/>
       </column>
-      <column name="password" type="varchar(100)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="password" type="varchar(100)"/>
       <column name="email" type="varchar(100)">
         <constraints nullable="false" unique="true"/>
       </column>
@@ -47,6 +45,7 @@
       <column name="email_verified" type="boolean">
         <constraints nullable="false"/>
       </column>
+      <column name="provider" type="varchar(50)"/>
       <column name="email_verification_token" type="varchar(64)"/>
       <column name="email_verification_expires_at" type="datetime"/>
       <column name="pending_email" type="varchar(100)">
