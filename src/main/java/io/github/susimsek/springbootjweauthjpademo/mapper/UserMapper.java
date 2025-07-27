@@ -75,6 +75,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", source = "email")
+    @Mapping(target = "providerId", source = "id")
     @Mapping(target = "enabled", constant = "true")
     @Mapping(target = "mfaEnabled", constant = "false")
     @Mapping(target = "locked", constant = "false")
@@ -89,5 +90,6 @@ public interface UserMapper {
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "provider", ignore = true)
+    @Mapping(target = "providerId", ignore = true)
     void updateFromOAuth2UserInfo(OAuth2UserInfo userInfo, @MappingTarget User entity);
 }

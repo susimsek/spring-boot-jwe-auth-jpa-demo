@@ -46,6 +46,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="provider" type="varchar(50)"/>
+      <column name="provider_id" type="varchar(100)"/>
       <column name="email_verification_token" type="varchar(64)"/>
       <column name="email_verification_expires_at" type="datetime"/>
       <column name="pending_email" type="varchar(100)">

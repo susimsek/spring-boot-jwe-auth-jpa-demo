@@ -1,10 +1,12 @@
 package io.github.susimsek.springbootjweauthjpademo.security.oauth2;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 import java.util.Map;
 
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuth2UserInfoFactory {
 
 

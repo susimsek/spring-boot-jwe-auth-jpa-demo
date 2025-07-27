@@ -102,6 +102,9 @@ public class User extends BaseEntity {
     @Column(name = "provider", length = 50)
     private String provider;
 
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
+
     @Column(name = "email_verification_token", length = 64)
     private String emailVerificationToken;
 
