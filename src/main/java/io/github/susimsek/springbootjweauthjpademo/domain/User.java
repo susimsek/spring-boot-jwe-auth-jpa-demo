@@ -23,6 +23,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
@@ -163,5 +164,19 @@ public class User extends BaseEntity {
         return this instanceof HibernateProxy proxy
             ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
             : getClass().hashCode();
+    }
+
+    public void lock(Duration duration) {
+        Instant now = Instant.now();
+        setLockTime(now);
+        setLockExpiresAt(now.plus(duration));
+        setLocked(true);
+    }
+
+    public void unlock() {
+        setFailedAttempt(0);
+        setLocked(false);
+        setLockTime(null);
+        setLockExpiresAt(null);
     }
 }

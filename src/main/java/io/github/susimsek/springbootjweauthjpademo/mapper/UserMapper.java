@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Mapper(componentModel = "spring", uses = AuthorityMapper.class)
 public interface UserMapper {
+
     UserDTO toUserDto(User user);
 
     RegistrationDTO toRegistrationDto(User user);

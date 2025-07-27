@@ -266,6 +266,10 @@ public class AuthenticationService {
         return userRepository.findOneWithAuthoritiesByEmail(email)
             .map(user -> {
                 userMapper.updateFromOAuth2UserInfo(userInfo, user);
+                Integer attempt = user.getFailedAttempt();
+                if (attempt != null && attempt > 0) {
+                    user.unlock();
+                }
                 return userRepository.save(user);
             })
             .orElseGet(() -> {

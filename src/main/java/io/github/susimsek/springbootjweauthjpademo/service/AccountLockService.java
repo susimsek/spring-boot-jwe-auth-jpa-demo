@@ -35,23 +35,9 @@ public class AccountLockService {
             && Instant.now().isAfter(u.getLockExpiresAt());
     }
 
-    private void unlock(User u) {
-        u.setFailedAttempt(0);
-        u.setLocked(false);
-        u.setLockExpiresAt(null);
-        u.setLockTime(null);
-    }
-
     private void saveAndEvict(User u) {
         User saved = userRepository.save(u);
         userCacheService.clearUserCaches(saved);
-    }
-
-    private void lockUser(User u) {
-        Instant now = Instant.now();
-        u.setLockTime(now);
-        u.setLockExpiresAt(now.plus(applicationProperties.getSecurity().getLock().getLockDuration()));
-        u.setLocked(true);
     }
 
     private void recordFailedAttempts(User u) {
@@ -60,10 +46,10 @@ public class AccountLockService {
             u.setFailedAttempt(attempts);
 
             if (attempts >= applicationProperties.getSecurity().getLock().getMaxFailedAttempts()) {
-                lockUser(u);
+                u.lock(applicationProperties.getSecurity().getLock().getLockDuration());
             }
         } else if (u.isLocked() && isLockExpired(u)) {
-            unlock(u);
+            u.unlock();
         }
         saveAndEvict(u);
     }
