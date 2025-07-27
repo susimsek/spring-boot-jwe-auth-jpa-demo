@@ -234,6 +234,8 @@
       <column name="mfa_verified" type="boolean"/>
       <column name="mfa_secret" type="string"/>
       <column name="email_verified" type="boolean"/>
+      <column name="provider" type="string"/>
+      <column name="provider_id" type="string"/>
       <column name="email_verification_token" type="string"/>
       <column name="email_verification_expires_at" type="datetime"/>
       <column name="pending_email" type="string"/>
