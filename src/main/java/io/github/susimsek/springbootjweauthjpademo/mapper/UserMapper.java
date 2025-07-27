@@ -9,6 +9,7 @@ import io.github.susimsek.springbootjweauthjpademo.dto.response.ProfileDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.RegistrationDTO;
 import io.github.susimsek.springbootjweauthjpademo.dto.response.UserDTO;
 import io.github.susimsek.springbootjweauthjpademo.security.UserPrincipal;
+import io.github.susimsek.springbootjweauthjpademo.security.oauth2.OAuth2UserInfo;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -70,4 +71,23 @@ public interface UserMapper {
     @Mapping(target = "authorities", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void partialUpdate(PartialUpdateUserRequestDTO dto, @MappingTarget User entity);
+
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", source = "email")
+    @Mapping(target = "enabled", constant = "true")
+    @Mapping(target = "mfaEnabled", constant = "false")
+    @Mapping(target = "locked", constant = "false")
+    @Mapping(target = "mfaVerified", constant = "false")
+    @Mapping(target = "emailVerified", constant = "false")
+    @Mapping(target = "protectedFlag", constant = "false")
+    @Mapping(target = "authorities", ignore = true)
+    User toEntityFromOAuth2UserInfo(OAuth2UserInfo userInfo);
+
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "provider", ignore = true)
+    void updateFromOAuth2UserInfo(OAuth2UserInfo userInfo, @MappingTarget User entity);
 }

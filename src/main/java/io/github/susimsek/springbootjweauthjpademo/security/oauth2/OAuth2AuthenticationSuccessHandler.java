@@ -1,6 +1,9 @@
-package io.github.susimsek.springbootjweauthjpademo.security;
+package io.github.susimsek.springbootjweauthjpademo.security.oauth2;
 
 import io.github.susimsek.springbootjweauthjpademo.mapper.AuthorityMapper;
+import io.github.susimsek.springbootjweauthjpademo.security.CookieUtils;
+import io.github.susimsek.springbootjweauthjpademo.security.JwtUtil;
+import io.github.susimsek.springbootjweauthjpademo.security.UserPrincipal;
 import io.github.susimsek.springbootjweauthjpademo.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

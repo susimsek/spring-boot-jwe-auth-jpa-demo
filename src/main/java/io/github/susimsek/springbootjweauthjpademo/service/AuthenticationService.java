@@ -31,6 +31,7 @@ import io.github.susimsek.springbootjweauthjpademo.security.RandomUtil;
 import io.github.susimsek.springbootjweauthjpademo.security.TotpAuthenticationToken;
 import io.github.susimsek.springbootjweauthjpademo.security.TotpUtil;
 import io.github.susimsek.springbootjweauthjpademo.security.UserPrincipal;
+import io.github.susimsek.springbootjweauthjpademo.security.oauth2.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -256,5 +257,29 @@ public class AuthenticationService {
         TokenDTO accessDto = jwtUtil.generateAccessToken(userId, roles, user.isMfaVerified());
 
         return new RefreshTokenResultDTO(accessDto, refreshDto.refreshToken());
+    }
+
+
+    @Transactional
+    public User processOAuth2User(OAuth2UserInfo userInfo) {
+        String email = userInfo.getEmail();
+        return userRepository.findOneWithAuthoritiesByEmail(email)
+            .map(user -> {
+                userMapper.updateFromOAuth2UserInfo(userInfo, user);
+                return userRepository.save(user);
+            })
+            .orElseGet(() -> {
+                User user = userMapper.toEntityFromOAuth2UserInfo(userInfo);
+                Authority authority = authorityRepository
+                    .findByName(AuthoritiesConstants.USER)
+                    .orElseThrow(() ->
+                        new IllegalStateException("Cannot register user. Required role 'ROLE_USER' is missing.")
+                    );
+                UserAuthorityMapping mapping = new UserAuthorityMapping();
+                mapping.setUser(user);
+                mapping.setAuthority(authority);
+                user.getAuthorities().add(mapping);
+                return userRepository.save(user);
+            });
     }
 }
