@@ -37,7 +37,11 @@ public record UserFilter(
     Boolean protectedFlag,
 
     @Parameter(description = "Locked status filter")
-    Boolean locked
+    Boolean locked,
+
+    @Parameter(description = "Provider filter")
+    @Size(min = 3, max = 50)
+    String provider
 ) {
 
     public Specification<User> toSpecification() {
@@ -66,6 +70,9 @@ public record UserFilter(
             }
             if (locked != null) {
                 predicates.add(cb.equal(root.get(User_.locked), locked));
+            }
+            if (StringUtils.hasText(provider)) {
+                predicates.add(cb.equal(root.get(User_.provider), provider));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };

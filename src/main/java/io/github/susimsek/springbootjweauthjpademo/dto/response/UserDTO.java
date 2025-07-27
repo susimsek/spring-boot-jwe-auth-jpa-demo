@@ -47,6 +47,9 @@ public record UserDTO(
     @Schema(description = "Whether the user account is locked", example = "false")
     Boolean locked,
 
+    @Schema(description = "Authentication provider", example = "google")
+    String provider,
+
     @Schema(description = "Timestamp when the user was created", example = "2025-06-13T15:47:38.786Z")
     Instant createdAt,
 

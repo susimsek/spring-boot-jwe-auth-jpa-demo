@@ -95,6 +95,14 @@
             <option value="false">Unlocked</option>
           </select>
         </div>
+        <!-- Provider Filter -->
+        <div class="input-group input-group-sm w-auto me-2">
+          <span class="input-group-text"><i class="fa fa-sign-in-alt"></i></span>
+          <select id="providerFilter" class="form-select">
+            <option value="">All Providers</option>
+            <option value="google">Google</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -276,6 +284,11 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
       currentPage = 1;
       loadUsers();
     });
+    // Provider filter
+    document.getElementById('providerFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
 
     loadUsers();
 
@@ -335,6 +348,11 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
     const selectedLocked = document.getElementById('lockedFilter').value;
     if (selectedLocked) {
       params.push(`locked=${selectedLocked}`);
+    }
+    // Provider filter
+    const selectedProvider = document.getElementById('providerFilter').value;
+    if (selectedProvider) {
+      params.push(`provider=${encodeURIComponent(selectedProvider)}`);
     }
     if (currentSortField) {
       const dir = sortState === 1 ? 'asc' : 'desc';
@@ -535,6 +553,9 @@ let users = [], currentPage = 1, pageSize = 10, totalItems = 0, userIdToDelete =
           <p><strong><i class="fa fa-lock me-1"></i>MFA Enabled:</strong> ${u.mfaEnabled?'Yes':'No'}</p>
           <p><strong><i class="fa fa-shield-alt me-1"></i>Protected:</strong> ${u.protected ? 'Yes' : 'No'}</p>
           <p><strong><i class="fa fa-lock me-1"></i>Locked:</strong> ${u.locked ? 'Yes' : 'No'}</p>
+          ${u.provider ? `<p><strong><i class="fa fa-sign-in-alt me-1"></i>Provider:</strong> ${u.provider === 'google'
+              ? '<span class="badge bg-danger">Google</span>'
+              : u.provider}</p>` : ''}
           <p><strong><i class="fa fa-shield-alt me-1"></i>Authorities:</strong>
             ${u.authorities.map(r=>
       `<span class="badge bg-${getBadgeColor(r)} me-1">${r}</span>`
