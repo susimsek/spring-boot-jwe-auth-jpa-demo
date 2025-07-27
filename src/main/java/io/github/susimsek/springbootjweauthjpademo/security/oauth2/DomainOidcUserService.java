@@ -21,14 +21,12 @@ public class DomainOidcUserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        // Delegate to the default implementation for loading user info
         OidcUser oidcUser = super.loadUser(userRequest);
         String provider   = userRequest.getClientRegistration().getRegistrationId();
-
         Map<String, Object> attributes = oidcUser.getAttributes();
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, attributes);
-        User user = authenticationService.processOAuth2User(userInfo);
 
+        User user = authenticationService.processOAuth2User(userInfo);
         return userMapper.toPrincipal(user, oidcUser);
     }
 }

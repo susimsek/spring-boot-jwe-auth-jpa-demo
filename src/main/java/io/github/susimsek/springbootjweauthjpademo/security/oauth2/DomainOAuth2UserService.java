@@ -27,7 +27,6 @@ public class DomainOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, attributes);
 
         User user = authenticationService.processOAuth2User(userInfo);
-
         return userMapper.toPrincipal(user, oauth2User);
     }
 }
